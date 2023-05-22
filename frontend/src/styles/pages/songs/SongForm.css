@@ -1,0 +1,100 @@
+.songForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.songForm__form {
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
+    min-width: 500px;
+    gap: 5px;
+}
+
+.songForm__songButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.songForm__songButtons * {
+    border: 1px solid black;
+    border-radius: 4px;
+    width: fit-content;
+    padding: 5px;
+    text-decoration: none;
+    color: black;
+    text-align: center;
+}
+
+.songForm__sectionButtonContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.songForm__sectionButtonContainer label {
+    border: 1px solid black;
+    border-radius: 4px;
+    width: fit-content;
+    padding: 1px;
+    background-color: rgb(188, 188, 188);
+}
+.songForm__sectionButtonContainer label:hover,
+ .songForm__deleteChordButton:hover,
+ .songForm__songButtons *:hover {
+    box-shadow: 1px 1px 5px 1px black;
+    cursor: pointer;
+}
+
+.songForm__changeSectionButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.songForm__sectionContainer {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.songForm__sectionHeader {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.songForm__chordContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.songForm__chordLyric {
+    min-width: 400px;
+}
+
+.songForm__deleteChordButton {
+    border: 1px solid black;
+    border-radius: 4px;
+    width: fit-content;
+    padding: 1px;
+}
+
+.songForm__lyric {
+    display: flex;
+    flex-direction: row;
+}
+
+.songForm__lyricInput {
+    width: 100%;
+    
+}
+

@@ -1,0 +1,16 @@
+.songRoutes__navBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    caret-color: transparent;
+    background-color:royalblue;
+}
+
+.songRoutes__navBar a {
+    text-decoration: none;
+    background-color: purple;
+    color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 3px;
+}

@@ -1,0 +1,82 @@
+
+
+.songDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    caret-color: transparent;
+}
+
+.songDetails__songSettings {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+.songDetails__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.songDetails__songName {
+    margin: 5px;
+}
+
+.songDetails__artist {
+    margin: 5px;
+}
+
+.songDetails__toggleView, .songDetails__editButton, .songDetails__deleteButton {
+    background-color: aquamarine;
+    border: 1px solid black;
+    border-radius: 4px;
+    color: black;
+    text-decoration: none;
+}
+
+.songDetails__toggleView:hover, .songDetails__deleteButton:hover, .songDetails__editButton:hover {
+    cursor: pointer;
+    box-shadow: 2px 2px 5px 2px #000000;
+}
+
+.songDetails__section {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.songDetails__sectionHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.songDetails__sectionHeader h4, p {
+    margin: 15px;
+}
+
+
+.songDetails__chordContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
+}
+
+.songDetails__chord{
+    background-color: rgba(164, 164, 164, 0.637);
+    border: 1px solid black;
+    border-radius: 2px;
+    width: fit-content;
+    padding: 2px;
+    margin: 5px;
+}
+
+.songDetails__lyric {
+    margin: 3px;
+}

@@ -1,0 +1,23 @@
+.root__header {
+    background-color: blueviolet;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    gap: 300px;
+    caret-color: transparent;
+}
+
+.root__navBar {
+    display: flex;
+    align-items: flex-end;
+    gap: 30px;
+}
+
+.root__navBar a{
+    height: 20px;
+    text-decoration: none;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+
+}
