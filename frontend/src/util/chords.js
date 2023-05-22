@@ -29,6 +29,7 @@ export const Types = {
     Diminished: "dim",
     MajorSeventh: "maj7",
     MinorSeventh: "m7",
+    DominantSeventh: "7",
     Sixth: "6",
     MinorSixth: "m6",
     
@@ -40,6 +41,7 @@ const TypeCase = {
    Diminished: Case.Lower,
    MajorSeventh: Case.Upper,
    MinorSeventh: Case.Lower,
+   DominantSeventh: Case.Upper,
    Sixth: Case.Upper,
    MinorSixth: Case.Lower,
 

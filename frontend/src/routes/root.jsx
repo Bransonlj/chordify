@@ -6,11 +6,11 @@ const Root = () => {
         <div className="root">
             <div className="root__header">
                 <h1>Chordify!</h1>
-                <div className="root__navBar">
+                <nav className="root__navBar">
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="/songs">Songs</NavLink>
                     <NavLink to="/about">About</NavLink>
-                </div>
+                </nav>
             </div>
             <div id="detail">
                 <Outlet />

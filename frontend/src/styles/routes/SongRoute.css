@@ -8,9 +8,14 @@
 
 .songRoutes__navBar a {
     text-decoration: none;
-    background-color: purple;
+    background-color: royalblue;
     color: white;
     border: 1px solid black;
     border-radius: 5px;
     margin: 3px;
+}
+
+.songRoutes__navBar a.active {
+    background-color: blueviolet;
+    color: white;
 }

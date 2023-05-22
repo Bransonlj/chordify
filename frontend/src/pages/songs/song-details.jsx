@@ -21,7 +21,7 @@ const SongDetails = () => {
             throw Error("unable to delete");
         }
         
-        navigate("/songs");
+        navigate("/songs/list");
     }
 
     const viewChordLetter = (chord) => {

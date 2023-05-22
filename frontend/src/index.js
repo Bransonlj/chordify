@@ -20,7 +20,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
   <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
     <Route path="songs" element={<SongRoute />} errorElement={<SongError />}>
-      <Route index element={<SongList />} loader={ songListLoader }></Route>
+      <Route path="list" element={<SongList />} loader={ songListLoader }></Route>
       <Route path="create" element={<SongForm />} action={ SongFormAction }></Route> 
       <Route path=":id" element={<SongDetails />} loader={ songDetailsLoader } ></Route>
       <Route path="edit/:id" element={ <SongForm /> } loader={ songDetailsLoader }  action={ SongFormAction }></Route>

@@ -5,7 +5,7 @@ export default function SongRoute() {
   return (
     <div className="songRoutes">
       <div className="songRoutes__navBar">
-        <NavLink to="/songs">All songs</NavLink>
+        <NavLink to="/songs/list">All songs</NavLink>
         <NavLink to="/songs/create">Add Song</NavLink>
       </div>
 

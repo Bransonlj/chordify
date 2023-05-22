@@ -278,7 +278,7 @@ export const SongFormAction = async ({ params, request }) => {
             throw Error("unable to add song");
         }
     
-        return redirect('/songs');
+        return redirect('/songs/list');
 
     } else if (request.method === "PATCH") {
         const response = await fetch("/api/songs/" + id, {

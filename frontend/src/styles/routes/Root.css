@@ -13,11 +13,16 @@
     gap: 30px;
 }
 
-.root__navBar a{
+.root__navBar a {
     height: 20px;
     text-decoration: none;
     color: white;
     border: 1px solid white;
     border-radius: 5px;
 
+}
+
+.root__navBar a.active {
+    background-color: white;
+    color: blueviolet;
 }
