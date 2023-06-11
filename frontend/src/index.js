@@ -6,6 +6,7 @@ import {
   createBrowserRouter,
   RouterProvider,
   Route,
+  Navigate,
 } from "react-router-dom";
 import Root from './routes/root';
 import ErrorPage from './error-page';
@@ -15,13 +16,19 @@ import SongError from './pages/songs/song-error';
 import SongRoute from './routes/song-route';
 import About from './pages/about/about';
 import SongForm, { SongFormAction } from './pages/songs/SongForm';
+import Home from './pages/Home';
+import SongForm2 from './pages/songs/SongForm2';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
   <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
+    <Route index element={ <Navigate to="/home" /> }></Route>
+    <Route path="home" element={ <Home /> }></Route>
     <Route path="songs" element={<SongRoute />} errorElement={<SongError />}>
+      <Route index element={ <Navigate to="/songs/list" /> } ></Route>
       <Route path="list" element={<SongList />} loader={ songListLoader }></Route>
       <Route path="create" element={<SongForm />} action={ SongFormAction }></Route> 
+      <Route path="create2" element={<SongForm2 />}></Route> 
       <Route path=":id" element={<SongDetails />} loader={ songDetailsLoader } ></Route>
       <Route path="edit/:id" element={ <SongForm /> } loader={ songDetailsLoader }  action={ SongFormAction }></Route>
     </Route>
