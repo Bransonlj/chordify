@@ -1,11 +1,32 @@
 import React, { useState } from 'react'
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Accidentals, Notes, Types, generateChordOptions, generateKeyTypeOptions } from '../../util/chords';
 import { redirect, useNavigate } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
 
-const Chord = ({ sectionIndex, chordIndex, register }) => {
+function CloneChord({ control, insert, sectionIndex, chordIndex }) {
+  const chordValues = useWatch({
+    control,
+    name: `sections.${sectionIndex}.chords`
+  });
 
+  return (
+    <label onClick={() => insert(chordIndex + 1, chordValues[chordIndex])}>Copy</label>
+  )
+}
+
+function CloneSection({ control, insert, sectionIndex }) {
+  const sectionValues = useWatch({
+    control,
+    name: 'sections'
+  });
+
+  return (
+    <label onClick={() => insert(sectionIndex + 1, sectionValues[sectionIndex])}>Copy</label>
+  )
+}
+
+const Chord = ({ sectionIndex, chordIndex, register }) => {
   return (
     <>
       <label>Chord</label>
@@ -68,13 +89,20 @@ const Section = ( {sectionIndex, control, register} ) => {
         <div key={field.id} className="songForm__chordContainer">
             <Chord sectionIndex={sectionIndex} chordIndex={index} register={register}></Chord>
             <label onClick={() => remove(index)} className="songForm__deleteChordButton">Delete Chord</label>
-            { index >= 1 && <label onClick={() => swap(index, index - 1)}>Move Up</label> }
-              { index < fields.length - 1 && <label onClick={() => swap(index, index + 1)}>Move Down</label> }
+            <CloneChord control={control} sectionIndex={sectionIndex} chordIndex={index} insert={insert}></CloneChord>
+            { index >= 1 && <label onClick={() => swap(index, index - 1)}>Up</label> }
+            { index < fields.length - 1 && <label onClick={() => swap(index, index + 1)}>Down</label> }
         </div>
       
     ))}
+
     <label onClick={() => {
-      append({ lyrics: "" });
+      append({
+        note: Notes.A,
+        accidental: Accidentals.Natural,
+        type: Types.Major,
+        lyric: '',
+      });
       }} className="songForm__addChord">Add Chord</label>
 
     </>
@@ -84,14 +112,33 @@ const Section = ( {sectionIndex, control, register} ) => {
 
 export default function SongForm2() {
 
-  const { control, register, formState: { errors }, handleSubmit } = useForm();
+  const { control, register, formState: { errors }, handleSubmit, watch } = useForm({
+    defaultValues: {
+      name: '',
+      artist: '',
+      sections: [{
+        name: '',
+        key: {
+          note: Notes.A,
+          accidental: Accidentals.Natural,
+          type: Types.Major,
+        },
+        chords: [{
+          note: Notes.A,
+          accidental: Accidentals.Natural,
+          type: Types.Major,
+          lyric: '',
+        }],
+      }]
+    }
+  });
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "sections", // unique name for your Field Array
   });
 
   const navigate = useNavigate();
-
+  console.log(watch())
   const onSubmit = async (data) => {
     console.log(data);
     const response = await fetch("/api/songs/", {
@@ -121,6 +168,7 @@ export default function SongForm2() {
             <Section sectionIndex={index} control={control} register={register}></Section>
             <div className="songForm__sectionButtonContainer">
               <label onClick={() => remove(index)}>Delete Section</label>
+              <CloneSection control={control} sectionIndex={index} insert={insert}></CloneSection>
               { index >= 1 && <label onClick={() => swap(index, index - 1)}>Move Up</label> }
               { index < fields.length - 1 && <label onClick={() => swap(index, index + 1)}>Move Down</label> }
             </div>
@@ -128,7 +176,20 @@ export default function SongForm2() {
         ))}
         <div className="songForm__songButtons">
           <label onClick={() => {
-            append({ sectionName: "", key: {} });
+            append({
+              name: '',
+              key: {
+                note: Notes.A,
+                accidental: Accidentals.Natural,
+                type: Types.Major,
+              },
+              chords: [{
+                note: Notes.A,
+                accidental: Accidentals.Natural,
+                type: Types.Major,
+                lyric: '',
+              }],
+            });
             }} className="songForm__addSection">Add Section</label>
           <input type="submit" className="songForm__submitButton" />
         </div>
