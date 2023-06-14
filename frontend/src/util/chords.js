@@ -16,7 +16,13 @@ export const Accidentals = {
     Sharp: "♯",
 }
 
-const Case = {
+const AccidentalsSimple = {
+    Natural: "",
+    Flat: "b",
+    Sharp: "#",
+}
+
+export const Case = {
     Upper: "upper",
     Lower: "lower",
 }
@@ -35,7 +41,36 @@ export const Types = {
     
 }
 
-const TypeCase = {
+// generates all possible chords.
+export const generateAllChordOptions = () => {
+    const options = [];
+    for (const note in Notes) {
+        for (const accidental in AccidentalsSimple) {
+            for (const type in Types) {
+                const option = Notes[note] + AccidentalsSimple[accidental] + Types[type]
+                options.push({ value: option, label: option});
+            }
+        }
+    }
+
+    return options;
+}
+
+export const generateAllKeyOptions = () => {
+    const options = [];
+    for (const note in Notes) {
+        for (const accidental in AccidentalsSimple) {
+            for (const type of KeyTypes) {
+                const option = Notes[note] + AccidentalsSimple[accidental] + Types[type]
+                options.push({ value: option, label: option});
+            }
+        }
+    }
+
+    return options;
+}
+
+export const TypeCase = {
    Major: Case.Upper,
    Minor: Case.Lower,
    Diminished: Case.Lower,
@@ -47,7 +82,7 @@ const TypeCase = {
 
 }
 
-const Numerals = {
+export const Numerals = {
     One: 'i',
     Two: 'ii',
     Three: 'iii',

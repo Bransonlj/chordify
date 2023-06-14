@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { Accidentals, Notes, Types, generateChordOptions, generateKeyTypeOptions } from '../../util/chords';
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Accidentals, Notes, Types, generateAllChordOptions, generateAllKeyOptions, generateChordOptions, generateKeyTypeOptions } from '../../util/chords';
 import { redirect, useNavigate } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
+import Select from 'react-select'
+import { parseSong } from '../../util/songs';
+
+const chordOptions = generateAllChordOptions();
+const keyOptions = generateAllKeyOptions();
 
 function CloneChord({ control, insert, sectionIndex, chordIndex }) {
   const chordValues = useWatch({
@@ -26,25 +31,20 @@ function CloneSection({ control, insert, sectionIndex }) {
   )
 }
 
-const Chord = ({ sectionIndex, chordIndex, register }) => {
+const Chord = ({ sectionIndex, chordIndex, register, control }) => {
   return (
     <>
       <label>Chord</label>
-      <select
-        {...register(`sections.${sectionIndex}.chords.${chordIndex}.note`)} 
-      >
-        {generateChordOptions(Notes)}
-      </select>
-      <select
-        {...register(`sections.${sectionIndex}.chords.${chordIndex}.accidental`)} 
-      >
-        {generateChordOptions(Accidentals)}
-      </select>
-      <select
-        {...register(`sections.${sectionIndex}.chords.${chordIndex}.type`)} 
-      >
-        {generateChordOptions(Types)}
-      </select>
+      <Controller
+        name={ `sections.${sectionIndex}.chords.${chordIndex}.chordString` }
+        control={ control }
+        render={ ({ field: { onChange } }) => (
+          <Select
+            options={ chordOptions }
+            onChange={ selectedOption => onChange(selectedOption.value) }
+          />
+        ) }
+      />
       <div className="songForm__lyric">
         <label>Lyrics</label>
         <input
@@ -74,20 +74,21 @@ const Section = ( {sectionIndex, control, register} ) => {
       </div>
       <div className="songForm__sectionKey"> 
         <label>Section key</label>
-        <select {...register(`sections.${sectionIndex}.key.note`)}>
-            { generateChordOptions(Notes) }
-        </select>
-        <select {...register(`sections.${sectionIndex}.key.accidental`)}>
-            { generateChordOptions(Accidentals) }
-        </select>
-        <select {...register(`sections.${sectionIndex}.key.type`)}>
-            { generateKeyTypeOptions() }
-        </select>
+        <Controller
+        name={ `sections.${sectionIndex}.keyString` }
+        control={ control }
+        render={ ({ field: { onChange } }) => (
+          <Select
+            options={ keyOptions }
+            onChange={ selectedOption => onChange(selectedOption.value) }
+          />
+        ) }
+      />
       </div>
 
       {fields.map((field, index) => (
         <div key={field.id} className="songForm__chordContainer">
-            <Chord sectionIndex={sectionIndex} chordIndex={index} register={register}></Chord>
+            <Chord sectionIndex={sectionIndex} chordIndex={index} register={register} control={control}></Chord>
             <label onClick={() => remove(index)} className="songForm__deleteChordButton">Delete Chord</label>
             <CloneChord control={control} sectionIndex={sectionIndex} chordIndex={index} insert={insert}></CloneChord>
             { index >= 1 && <label onClick={() => swap(index, index - 1)}>Up</label> }
@@ -98,9 +99,7 @@ const Section = ( {sectionIndex, control, register} ) => {
 
     <label onClick={() => {
       append({
-        note: Notes.A,
-        accidental: Accidentals.Natural,
-        type: Types.Major,
+        chordString: '',
         lyric: '',
       });
       }} className="songForm__addChord">Add Chord</label>
@@ -112,21 +111,15 @@ const Section = ( {sectionIndex, control, register} ) => {
 
 export default function SongForm2() {
 
-  const { control, register, formState: { errors }, handleSubmit, watch } = useForm({
+  const { control, register, formState: { errors }, handleSubmit } = useForm({
     defaultValues: {
       name: '',
       artist: '',
       sections: [{
         name: '',
-        key: {
-          note: Notes.A,
-          accidental: Accidentals.Natural,
-          type: Types.Major,
-        },
+        keyString: '',
         chords: [{
-          note: Notes.A,
-          accidental: Accidentals.Natural,
-          type: Types.Major,
+          chordString: '',
           lyric: '',
         }],
       }]
@@ -138,9 +131,13 @@ export default function SongForm2() {
   });
 
   const navigate = useNavigate();
-  console.log(watch())
+
   const onSubmit = async (data) => {
+
+    // rebuild data
+    parseSong(data);
     console.log(data);
+
     const response = await fetch("/api/songs/", {
       method: "POST",
       body: JSON.stringify(data),
@@ -178,15 +175,9 @@ export default function SongForm2() {
           <label onClick={() => {
             append({
               name: '',
-              key: {
-                note: Notes.A,
-                accidental: Accidentals.Natural,
-                type: Types.Major,
-              },
+              keyString: '',
               chords: [{
-                note: Notes.A,
-                accidental: Accidentals.Natural,
-                type: Types.Major,
+                chordString: '',
                 lyric: '',
               }],
             });
