@@ -179,9 +179,10 @@ export class Chord {
         return displayNote(this.note, this.accidental) + displayChordType(this.type);
     }
 
+    // parameter key is a Chord object
     displayChordNumeric(key) {
-        const { keyNote, keyAccidental, keyType } = key;
-        if (keyNote === undefined || keyAccidental === undefined || keyType === undefined) {
+        
+        if (!key instanceof Chord) {
             throw Error("invalid key object given");
         }
 
@@ -191,7 +192,7 @@ export class Chord {
             num -= 12;
         }
 
-        let tonic = noteToNumber(keyNote) + accidentalModifier(keyAccidental);
+        let tonic = noteToNumber(key.note) + accidentalModifier(key.accidental);
         if (tonic > 12) {
             tonic -= 12;
         }
@@ -201,11 +202,11 @@ export class Chord {
 
         const relativeNum = 1 + Math.abs(num - tonic);
 
-        if (_.isEqual(keyType, Types.Major)) {
+        if (_.isEqual(key.type, Types.Major)) {
             return TypeCase[this.type] === Case.Upper 
                 ? numberToNumeralMajor(relativeNum, this.accidental).toUpperCase() + displayNumericChordType(this.type)
                 : numberToNumeralMajor(relativeNum, this.accidental).toLowerCase() + displayNumericChordType(this.type);
-        } else if (_.isEqual(keyType, Types.Minor)) {
+        } else if (_.isEqual(key.type, Types.Minor)) {
             return TypeCase[this.type] === Case.Upper 
                 ? numberToNumeralMinor(relativeNum, this.accidental).toUpperCase() + displayNumericChordType(this.type)
                 : numberToNumeralMinor(relativeNum, this.accidental).toLowerCase() + displayNumericChordType(this.type);

@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import Root from './routes/root';
 import ErrorPage from './error-page';
-import SongDetails, { songDetailsLoader } from './pages/songs/song-details';
+import SongDetails, { songDetailsLoader } from './pages/songs/songDetails';
 import SongList, { songListLoader } from './pages/songs/SongList';
 import SongError from './pages/songs/song-error';
 import SongRoute from './routes/song-route';
