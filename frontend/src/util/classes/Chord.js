@@ -1,4 +1,4 @@
-import { Notes, Accidentals, Types, Case, Numerals, TypeCase } from '../chords'
+import { Notes, Accidentals, AccidentalsSimple, Types, Case, Numerals, TypeCase } from '../chords'
 
 const _ = require('lodash');
 
@@ -173,6 +173,28 @@ export class Chord {
         const typeNew = chordString.slice(nextIndex);
 
         return new Chord(noteNew, accidentalNew, typeNew);
+    }
+
+    /**
+     * Converts the chord object into a string and returns it
+     */
+    toChordString() {
+        let chordString = this.note;
+        switch (this.accidental) {
+            case Accidentals.Sharp:
+                chordString += AccidentalsSimple.Sharp;
+                break;
+            case Accidentals.Flat:
+                chordString += AccidentalsSimple.Flat;
+                break;
+            case Accidentals.Natural:
+                chordString += AccidentalsSimple.Natural;
+                break;
+            default:
+                console.log(this.accidental)
+        }
+        chordString += this.type;
+        return chordString;
     }
 
     displayChordAlphabetic() {

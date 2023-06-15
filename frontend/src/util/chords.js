@@ -16,7 +16,7 @@ export const Accidentals = {
     Sharp: "♯",
 }
 
-const AccidentalsSimple = {
+export const AccidentalsSimple = {
     Natural: "",
     Flat: "b",
     Sharp: "#",

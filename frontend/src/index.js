@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import Root from './routes/root';
 import ErrorPage from './error-page';
-import SongDetails, { songDetailsLoader } from './pages/songs/songDetails';
+import SongDetails, { songDetailsLoader } from './pages/songs/SongDetails';
 import SongList, { songListLoader } from './pages/songs/SongList';
 import SongError from './pages/songs/song-error';
 import SongRoute from './routes/song-route';
@@ -30,7 +30,7 @@ const router = createBrowserRouter(
       <Route path="create" element={<SongForm />} action={ SongFormAction }></Route> 
       <Route path="create2" element={<SongForm2 />}></Route> 
       <Route path=":id" element={<SongDetails />} loader={ songDetailsLoader } ></Route>
-      <Route path="edit/:id" element={ <SongForm /> } loader={ songDetailsLoader }  action={ SongFormAction }></Route>
+      <Route path="edit/:id" element={ <SongForm2 /> } loader={ songDetailsLoader } ></Route>
     </Route>
 
     <Route path="about" element={<About />}></Route>

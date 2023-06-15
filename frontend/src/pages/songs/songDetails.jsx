@@ -26,9 +26,7 @@ const SectionDetails = ({ section, isViewNumbers }) => {
             </div>
             <div className="songDetails__chordContainer">
                 { section.chords.map(chord => (
-                    <>
-                        <ChordDetails key={chord.id} chord={chord} keyObject={keyObject} isViewNumbers={isViewNumbers} />
-                    </>
+                        <ChordDetails key={chord._id} chord={chord} keyObject={keyObject} isViewNumbers={isViewNumbers} />
                 )) } 
             </div>
         </div>
@@ -57,42 +55,6 @@ const SongDetails = () => {
         navigate("/songs/list");
     }
 
-    const viewChordLetter = (chord) => {
-
-        return (
-            <div key={ chord._id } className="songDetails__chordLyric">
-                <p className="songDetails__chord">{ displayChord(chord.note, chord.accidental, chord.type) }</p>
-                <p className="songDetails__lyric">{ chord.lyric }</p>
-            </div>
-        )
-    }
-
-    const viewChordNumbers = (chord, section) => {
-        return (
-            <div key={ chord._id } className="songDetails__chordLyric">
-                <p className="songDetails__chord">{ convertChordToNumerals(chord.note, chord.accidental, chord.type, section.key.note, section.key.accidental, section.key.type) }</p>
-                <p className="songDetails__lyric">{ chord.lyric }</p>
-            </div>
-        )
-    }
-
-    const displaySection = (section, sectionIndex) => {
-        const keyObject = new Chord(section.key.note, section.key.accidental, section.key.type);
-        return (
-            <div key={ section._id } className="songDetails__section">
-                <div className="songDetails__sectionHeader">
-                    <h4>{ section.name }</h4>
-                    <p>key: { keyObject.displayChordAlphabetic() }</p>
-                </div>
-                <div className="songDetails__chordContainer">
-                    { section.chords.map(chord => (
-                        <ChordDetails chord={chord} keyObject={keyObject} isViewNumbers={isViewNumbers} key={chord.id}/>
-                    )) } 
-                </div>
-            </div>
-        )
-    }
-
     return ( 
         <div>
             {song && <div className="songDetails">
@@ -107,9 +69,7 @@ const SongDetails = () => {
                             <button onClick={deleteSong} className="songDetails__deleteButton">Delete</button>
                         </div>
                         { song.sections.map(section => (
-                            <>
-                                <SectionDetails key={section.id} section={section} isViewNumbers={isViewNumbers} />
-                            </>
+                                <SectionDetails key={section._id} section={section} isViewNumbers={isViewNumbers} />
                         )) }
                         
                     

@@ -1,4 +1,5 @@
 import { Form, useLoaderData } from "react-router-dom";
+import Select from 'react-select';
 
 export default function About() {
 
@@ -11,10 +12,7 @@ export default function About() {
         {console.log(x)}
         <Form>
           <label>For testing</label>
-          <select defaultValue={"hi"}>
-            <option value="nigga">hi</option>
-            <option value="hi">bye</option>
-          </select>
+          <Select options={[{value: "one", label: "one"}, {value: "two", label: "two"}]} placeholder="fucku" defaultValue={{value: "three", label: "three"}}/>
         </Form>
     </div>
   )
