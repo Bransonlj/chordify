@@ -43,15 +43,16 @@ const SongDetails = () => {
     const navigate = useNavigate();
 
     const deleteSong = async () => {
-        const response = await fetch("/api/songs/" + song._id, {
-            method: "DELETE",
-        });
-
-        if (!response.ok) {
-            throw Error("unable to delete");
+        if (window.confirm("Delete song?")) {
+            const response = await fetch("/api/songs/" + song._id, {
+                method: "DELETE",
+            });
+    
+            if (!response.ok) {
+                throw Error("unable to delete");
+            }
+            navigate("/songs/list");
         }
-        
-        navigate("/songs/list");
     }
 
     return ( 
@@ -70,11 +71,7 @@ const SongDetails = () => {
                         { song.sections.map(section => (
                                 <SectionDetails key={section._id} section={section} isViewNumbers={isViewNumbers} />
                         )) }
-                        
-                    
             </div>}
-        
-
         </div>
      );
 }

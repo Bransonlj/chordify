@@ -9,25 +9,106 @@ import { parseSong, songChordToChordString } from '../../util/songs';
 const chordOptions = generateAllChordOptions();
 const keyOptions = generateAllKeyOptions();
 
+const emptySong = {
+  name: '',
+  artist: '',
+  sections: [{
+    name: '',
+    keyString: '',
+    chords: [{
+      chordString: '',
+      lyric: '',
+    }],
+  }]
+};
+
+const emptySection = {
+  name: '',
+    keyString: '',
+    chords: [{
+      chordString: '',
+      lyric: '',
+    }],
+}
+
+const emptyChord = {
+  chordString: '',
+  lyric: '',
+};
+
 function CloneChord({ control, insert, sectionIndex, chordIndex }) {
-  const chordValues = useWatch({
+  const chordValue = useWatch({
     control,
-    name: `sections.${sectionIndex}.chords`
+    name: `sections.${sectionIndex}.chords.${chordIndex}`
   });
 
   return (
-    <label onClick={() => insert(chordIndex + 1, chordValues[chordIndex])}>Copy</label>
+    <label onClick={() => insert(chordIndex + 1, chordValue)}>Copy</label>
   )
 }
 
 function CloneSection({ control, insert, sectionIndex }) {
-  const sectionValues = useWatch({
+  const sectionValue = useWatch({
     control,
-    name: 'sections'
+    name: `sections.${sectionIndex}`
   });
 
   return (
-    <label onClick={() => insert(sectionIndex + 1, sectionValues[sectionIndex])}>Copy</label>
+    <label onClick={() => insert(sectionIndex + 1, sectionValue)}>Copy</label>
+  )
+}
+
+const isDefaultChord = (chord) => {
+  return emptyChord.chordString === chord.chordString && emptyChord.lyric === chord.lyric;
+
+}
+
+const isDefaultSection = (section) => {
+  let isEmptyChords = true;
+  for (const chord of section.chords) {
+    if (!isDefaultChord(chord)) {
+      isEmptyChords = false;
+    }
+  }
+
+  return emptySection.name === section.name && emptySection.keyString === section.keyString && isEmptyChords;
+}
+
+const handleDeleteChord = (remove, index, chord) => {
+  if (isDefaultChord(chord)) {
+    remove(index);
+  } else if (window.confirm("Delete chord?")) {
+    remove(index);
+  }
+}
+
+const handleDeleteSection = (remove, index, section) => {
+  if (isDefaultSection(section)) {
+    remove(index);
+  } else if (window.confirm("Delete section?")) {
+    remove(index);
+  }
+}
+
+function DeleteChord({ control, remove, sectionIndex, chordIndex }) {
+  const chordValue = useWatch({
+    control, 
+    name: `sections.${sectionIndex}.chords.${chordIndex}`
+  })
+
+  return (
+    <label onClick={ () => handleDeleteChord(remove, chordIndex, chordValue) }>Delete Chord</label>
+  )
+}
+
+function DeleteSection({ control, remove, sectionIndex }) {
+  const sectionValue = useWatch({
+    control,
+    name: `sections.${sectionIndex}`
+  })
+
+  return (
+    <label onClick={ () => handleDeleteSection(remove, sectionIndex, sectionValue) }>Delete Section</label>
   )
 }
 
@@ -89,24 +170,23 @@ const Section = ( { section, sectionIndex, control, register } ) => {
       />
       </div>
 
-      {fields.map((field, index) => (
+      { fields.map((field, index) => (
         <div key={field.id} className="songForm__chordContainer">
             <Chord chord={field} sectionIndex={sectionIndex} chordIndex={index} register={register} control={control}></Chord>
-            <label onClick={() => remove(index)} className="songForm__deleteChordButton">Delete Chord</label>
+            <DeleteChord 
+              className="songForm__deleteChordButton" 
+              control={control} remove={remove} 
+              sectionIndex={sectionIndex} 
+              chordIndex={index}
+            />
             <CloneChord control={control} sectionIndex={sectionIndex} chordIndex={index} insert={insert}></CloneChord>
             { index >= 1 && <label onClick={() => swap(index, index - 1)}>Up</label> }
             { index < fields.length - 1 && <label onClick={() => swap(index, index + 1)}>Down</label> }
         </div>
       
-    ))}
+      )) }
 
-    <label onClick={() => {
-      append({
-        chordString: '',
-        lyric: '',
-      });
-      }} className="songForm__addChord">Add Chord</label>
-
+      <label onClick={ () => append(emptyChord) } className="songForm__addChord">Add Chord</label>
     </>
     
   )
@@ -143,18 +223,6 @@ export default function SongForm2() {
   const navigate = useNavigate();
   const { id } = useParams()
   const song = useLoaderData();
-  const emptySong = {
-    name: '',
-    artist: '',
-    sections: [{
-      name: '',
-      keyString: '',
-      chords: [{
-        chordString: '',
-        lyric: '',
-      }],
-    }]
-  }
 
   const { control, register, reset, formState: { errors }, handleSubmit } = useForm({
     defaultValues: emptySong,
@@ -197,7 +265,11 @@ export default function SongForm2() {
           <div key={field.id} className="songForm__sectionContainer"> 
             <Section section={field} sectionIndex={index} control={control} register={register}></Section>
             <div className="songForm__sectionButtonContainer">
-              <label onClick={() => remove(index)}>Delete Section</label>
+              <DeleteSection 
+                control={control}
+                remove={remove}
+                sectionIndex={index}
+              />
               <CloneSection control={control} sectionIndex={index} insert={insert}></CloneSection>
               { index >= 1 && <label onClick={() => swap(index, index - 1)}>Move Up</label> }
               { index < fields.length - 1 && <label onClick={() => swap(index, index + 1)}>Move Down</label> }
@@ -205,16 +277,10 @@ export default function SongForm2() {
           </div>
         ))}
         <div className="songForm__songButtons">
-          <label onClick={() => {
-            append({
-              name: '',
-              keyString: '',
-              chords: [{
-                chordString: '',
-                lyric: '',
-              }],
-            });
-            }} className="songForm__addSection">Add Section</label>
+          <label 
+            onClick={ () => append(emptySection) } 
+            className="songForm__addSection"
+          >Add Section</label>
           <input type="submit" className="songForm__submitButton" />
         </div>
       </form>
