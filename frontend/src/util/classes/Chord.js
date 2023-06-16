@@ -3,15 +3,15 @@ import { Notes, Accidentals, AccidentalsSimple, Types, Case, Numerals, TypeCase 
 const _ = require('lodash');
 
 const displayNote = (note, accidental) => {
-    return accidental === Accidentals.Natural
+    return accidental === Accidentals.NATURAL
         ? note
         : note + accidental;
 }
 
 const displayChordType = (type) => {
-    if (_.isEqual(type, Types.Major)) {
+    if (_.isEqual(type, Types.MAJOR)) {
         return "";
-    } else if (_.isEqual(type, Types.Minor)) {
+    } else if (_.isEqual(type, Types.MINOR)) {
         return "m";
     } else {
         return type;
@@ -22,7 +22,7 @@ const displayChordType = (type) => {
 
 // if major/minor chord, dont display type.
 const displayNumericChordType = (type) => {
-    return _.isEqual(type, Types.Major) || _.isEqual(type, Types.Minor)
+    return _.isEqual(type, Types.MAJOR) || _.isEqual(type, Types.MINOR)
         ? ""
         : type;
 }
@@ -50,11 +50,11 @@ const noteToNumber = (note) => {
 
 const accidentalModifier = (accidental) => {
     switch (accidental) {
-        case Accidentals.Flat:
+        case Accidentals.FLAT:
             return -1;
-        case Accidentals.Natural:
+        case Accidentals.NATURAL:
             return 0;
-        case Accidentals.Sharp:
+        case Accidentals.SHARP:
             return 1;
         default:
             throw Error("Not an Accidental");
@@ -64,78 +64,78 @@ const accidentalModifier = (accidental) => {
 const numberToNumeralMajor = (num, accidental) => {
     switch(num) {
         case 1:
-            return Numerals.One;
+            return Numerals.ONE;
         case 2:
-            return accidental === Accidentals.Sharp
-                ? Accidentals.Sharp + Numerals.One
-                : Accidentals.Flat + Numerals.Two;
+            return accidental === Accidentals.SHARP
+                ? Accidentals.SHARP + Numerals.ONE
+                : Accidentals.FLAT + Numerals.TWO;
         case 3:
-            return Numerals.Two;
+            return Numerals.TWO;
         case 4:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Two
-            : Accidentals.Flat + Numerals.Three;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.TWO
+            : Accidentals.FLAT + Numerals.THREE;
         case 5:
-            return Numerals.Three;
+            return Numerals.THREE;
         case 6:
-            return Numerals.Four;
+            return Numerals.FOUR;
         case 7:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Four
-            : Accidentals.Flat + Numerals.Five;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.FOUR
+            : Accidentals.FLAT + Numerals.FIVE;
         case 8:
-            return Numerals.Five;
+            return Numerals.FIVE;
         case 9:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Five
-            : Accidentals.Flat + Numerals.Six;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.FIVE
+            : Accidentals.FLAT + Numerals.SIX;
         case 10:
-            return Numerals.Six;
+            return Numerals.SIX;
         case 11:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Six
-            : Accidentals.Flat + Numerals.Seven;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.SIX
+            : Accidentals.FLAT + Numerals.SEVEN;
         case 12:
-            return Numerals.Seven;
+            return Numerals.SEVEN;
     }
 }
 
 const numberToNumeralMinor = (num, accidental) => {
     switch(num) {
         case 1:
-            return Numerals.One;
+            return Numerals.ONE;
         case 2:
-            return accidental === Accidentals.Sharp
-                ? Accidentals.Sharp + Numerals.One
-                : Accidentals.Flat + Numerals.Two;
+            return accidental === Accidentals.SHARP
+                ? Accidentals.SHARP + Numerals.ONE
+                : Accidentals.FLAT + Numerals.TWO;
         case 3:
-            return Numerals.Two;
+            return Numerals.TWO;
         case 4:
-            return Numerals.Three
+            return Numerals.THREE
         case 5:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Three
-            : Accidentals.Flat + Numerals.Four;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.THREE
+            : Accidentals.FLAT + Numerals.FOUR;
         case 6:
-            return Numerals.Four;
+            return Numerals.FOUR;
         case 7:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Four
-            : Accidentals.Flat + Numerals.Five;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.FOUR
+            : Accidentals.FLAT + Numerals.FIVE;
         case 8:
-            return Numerals.Five;
+            return Numerals.FIVE;
         case 9:
-            return Numerals.Six;
+            return Numerals.SIX;
         case 10:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Five
-            : Accidentals.Flat + Numerals.Six;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.FIVE
+            : Accidentals.FLAT + Numerals.SIX;
         case 11:
-            return Numerals.Seven;
+            return Numerals.SEVEN;
         case 12:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Six
-            : Accidentals.Flat + Numerals.Seven;
+            return accidental === Accidentals.SHARP
+            ? Accidentals.SHARP + Numerals.SIX
+            : Accidentals.FLAT + Numerals.SEVEN;
     }
 }
 
@@ -158,13 +158,13 @@ export class Chord {
         // Note
         const noteNew = chordString[0];
 
-        let accidentalNew = Accidentals.Natural;
+        let accidentalNew = Accidentals.NATURAL;
         let nextIndex = 2;
         // Accidental
         if (chordString[1] === "#") {
-            accidentalNew = Accidentals.Sharp;
+            accidentalNew = Accidentals.SHARP;
         } else if (chordString[1] === "b") {
-            accidentalNew = Accidentals.Flat;
+            accidentalNew = Accidentals.FLAT;
         } else {
             nextIndex = 1
         }
@@ -181,14 +181,14 @@ export class Chord {
     toChordString() {
         let chordString = this.note;
         switch (this.accidental) {
-            case Accidentals.Sharp:
-                chordString += AccidentalsSimple.Sharp;
+            case Accidentals.SHARP:
+                chordString += AccidentalsSimple.SHARP;
                 break;
-            case Accidentals.Flat:
-                chordString += AccidentalsSimple.Flat;
+            case Accidentals.FLAT:
+                chordString += AccidentalsSimple.FLAT;
                 break;
-            case Accidentals.Natural:
-                chordString += AccidentalsSimple.Natural;
+            case Accidentals.NATURAL:
+                chordString += AccidentalsSimple.NATURAL;
                 break;
             default:
                 console.log(this.accidental)
@@ -224,12 +224,12 @@ export class Chord {
 
         const relativeNum = 1 + Math.abs(num - tonic);
 
-        if (_.isEqual(key.type, Types.Major)) {
-            return TypeCase[this.type] === Case.Upper 
+        if (_.isEqual(key.type, Types.MAJOR)) {
+            return TypeCase[this.type] === Case.UPPER 
                 ? numberToNumeralMajor(relativeNum, this.accidental).toUpperCase() + displayNumericChordType(this.type)
                 : numberToNumeralMajor(relativeNum, this.accidental).toLowerCase() + displayNumericChordType(this.type);
-        } else if (_.isEqual(key.type, Types.Minor)) {
-            return TypeCase[this.type] === Case.Upper 
+        } else if (_.isEqual(key.type, Types.MINOR)) {
+            return TypeCase[this.type] === Case.UPPER 
                 ? numberToNumeralMinor(relativeNum, this.accidental).toUpperCase() + displayNumericChordType(this.type)
                 : numberToNumeralMinor(relativeNum, this.accidental).toLowerCase() + displayNumericChordType(this.type);
         } else {

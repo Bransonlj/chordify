@@ -11,102 +11,56 @@ export const Notes = {
 };
 
 export const Accidentals = {
-    Natural: "♮",
-    Flat: "♭",
-    Sharp: "♯",
+    NATURAL: "♮",
+    FLAT: "♭",
+    SHARP: "♯",
 }
 
 export const AccidentalsSimple = {
-    Natural: "",
-    Flat: "b",
-    Sharp: "#",
+    NATURAL: "",
+    FLAT: "b",
+    SHARP: "#",
 }
 
 export const Case = {
-    Upper: "upper",
-    Lower: "lower",
+    UPPER: "upper",
+    LOWER: "lower",
 }
 
 const KeyTypes = ["Major", "Minor"];
 
 export const Types = {
-    Major: "maj",
-    Minor: "min",
-    Diminished: "dim",
-    MajorSeventh: "maj7",
-    MinorSeventh: "m7",
-    DominantSeventh: "7",
-    Sixth: "6",
-    MinorSixth: "m6",
+    MAJOR: "maj",
+    MINOR: "min",
+    DIMINISHED: "dim",
+    MAJOR_SEVENTH: "maj7",
+    MINOR_SEVENTH: "m7",
+    DOMINANT_SEVENTH: "7",
+    SIXTH: "6",
+    MINOR_SIXTH: "m6",
     
 }
 
 export const TypeCase = {
-   Major: Case.Upper,
-   Minor: Case.Lower,
-   Diminished: Case.Lower,
-   MajorSeventh: Case.Upper,
-   MinorSeventh: Case.Lower,
-   DominantSeventh: Case.Upper,
-   Sixth: Case.Upper,
-   MinorSixth: Case.Lower,
+   MAJOR: Case.UPPER,
+   MINOR: Case.LOWER,
+   DIMINISHED: Case.LOWER,
+   MAJOR_SEVENTH: Case.UPPER,
+   MINOR_SEVENTH: Case.LOWER,
+   DOMINANT_SEVENTH: Case.UPPER,
+   SIXTH: Case.UPPER,
+   MINOR_SIXTH: Case.LOWER,
 
 }
 
 export const Numerals = {
-    One: 'i',
-    Two: 'ii',
-    Three: 'iii',
-    Four: 'iv',
-    Five: 'v',
-    Six: 'vi',
-    Seven: 'vii',
-}
-
-export const generateChordOptions = (arg) => {
-    return ( 
-        <>
-        { Object.keys(arg).map((val) => (
-            <option value={ arg[val] } key={ val }>{ arg[val] }</option>
-        )) }
-        </>
-    )
-}
-
-/**
- * Generates array of option elements. Types enum object is used for comparison with defaultVal.
- * @param {*} defaultVal Types enum object to be used as the initial value. No value by default.
- * @returns Array of option elements.
- */
-export const generateAllTypeOptions = (defaultVal=null) => {
-    return ( 
-        <>
-        { Object.keys(Types).map((typeKey) => {
-            if (_.isEqual(Types[typeKey], defaultVal)) {
-                return (
-                    <option value={ typeKey } key={ typeKey } selected>{ Types[typeKey].symbol }</option>
-                )
-            } else {
-                return (
-                    <option value={ typeKey } key={ typeKey }>{ Types[typeKey].symbol }</option>
-                )
-            }
-        }) }
-        </>
-    )
-}
-
-/**
- * Values are the String key for the Type objects enum. use Types[value] to obtain the Type object.
- */
-export const generateKeyTypeOptions = () => {
-    return ( 
-        <>
-            { KeyTypes.map((typeKey) => (
-                <option value={ Types[typeKey] } key={ typeKey }>{ Types[typeKey] }</option>
-            )) }
-        </>
-    )
+    ONE: 'i',
+    TWO: 'ii',
+    THREE: 'iii',
+    FOUR: 'iv',
+    FIVE: 'v',
+    SIX: 'vi',
+    SEVEN: 'vii',
 }
 
 // generates all possible chords.
