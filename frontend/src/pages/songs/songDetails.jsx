@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useLoaderData, useNavigate, useParams, NavLink } from "react-router-dom";
-import { displayChord, convertChordToNumerals } from "../../util/chords";
 import "../../styles/pages/songs/SongDetail.css"
 import { Chord } from "../../util/classes/Chord";
 

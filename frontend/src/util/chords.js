@@ -41,35 +41,6 @@ export const Types = {
     
 }
 
-// generates all possible chords.
-export const generateAllChordOptions = () => {
-    const options = [];
-    for (const note in Notes) {
-        for (const accidental in AccidentalsSimple) {
-            for (const type in Types) {
-                const option = Notes[note] + AccidentalsSimple[accidental] + Types[type]
-                options.push({ value: option, label: option});
-            }
-        }
-    }
-
-    return options;
-}
-
-export const generateAllKeyOptions = () => {
-    const options = [];
-    for (const note in Notes) {
-        for (const accidental in AccidentalsSimple) {
-            for (const type of KeyTypes) {
-                const option = Notes[note] + AccidentalsSimple[accidental] + Types[type]
-                options.push({ value: option, label: option});
-            }
-        }
-    }
-
-    return options;
-}
-
 export const TypeCase = {
    Major: Case.Upper,
    Minor: Case.Lower,
@@ -90,84 +61,6 @@ export const Numerals = {
     Five: 'v',
     Six: 'vi',
     Seven: 'vii',
-}
-
-const numberToNumeralMajor = (num, accidental) => {
-    switch(num) {
-        case 1:
-            return Numerals.One;
-        case 2:
-            return accidental === Accidentals.Sharp
-                ? Accidentals.Sharp + Numerals.One
-                : Accidentals.Flat + Numerals.Two;
-        case 3:
-            return Numerals.Two;
-        case 4:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Two
-            : Accidentals.Flat + Numerals.Three;
-        case 5:
-            return Numerals.Three;
-        case 6:
-            return Numerals.Four;
-        case 7:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Four
-            : Accidentals.Flat + Numerals.Five;
-        case 8:
-            return Numerals.Five;
-        case 9:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Five
-            : Accidentals.Flat + Numerals.Six;
-        case 10:
-            return Numerals.Six;
-        case 11:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Six
-            : Accidentals.Flat + Numerals.Seven;
-        case 12:
-            return Numerals.Seven;
-    }
-}
-
-const numberToNumeralMinor = (num, accidental) => {
-    switch(num) {
-        case 1:
-            return Numerals.One;
-        case 2:
-            return accidental === Accidentals.Sharp
-                ? Accidentals.Sharp + Numerals.One
-                : Accidentals.Flat + Numerals.Two;
-        case 3:
-            return Numerals.Two;
-        case 4:
-            return Numerals.Three
-        case 5:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Three
-            : Accidentals.Flat + Numerals.Four;
-        case 6:
-            return Numerals.Four;
-        case 7:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Four
-            : Accidentals.Flat + Numerals.Five;
-        case 8:
-            return Numerals.Five;
-        case 9:
-            return Numerals.Six;
-        case 10:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Five
-            : Accidentals.Flat + Numerals.Six;
-        case 11:
-            return Numerals.Seven;
-        case 12:
-            return accidental === Accidentals.Sharp
-            ? Accidentals.Sharp + Numerals.Six
-            : Accidentals.Flat + Numerals.Seven;
-    }
 }
 
 export const generateChordOptions = (arg) => {
@@ -216,91 +109,31 @@ export const generateKeyTypeOptions = () => {
     )
 }
 
-export const displayNote = (note, accidental) => {
-    return accidental === Accidentals.Natural
-        ? note
-        : note + accidental;
+// generates all possible chords.
+export const generateAllChordOptions = () => {
+    const options = [];
+    for (const note in Notes) {
+        for (const accidental in AccidentalsSimple) {
+            for (const type in Types) {
+                const option = Notes[note] + AccidentalsSimple[accidental] + Types[type]
+                options.push({ value: option, label: option});
+            }
+        }
+    }
+
+    return options;
 }
 
-export const displayChord = (note, accidental, type) => {
-    return displayNote(note, accidental) + displayChordType(type);
-}
-
-const displayChordType = (type) => {
-    if (_.isEqual(type, Types.Major)) {
-        return "";
-    } else if (_.isEqual(type, Types.Minor)) {
-        return "m";
-    } else {
-        return type;
-    }
-}
-
-const displayNumericChordType = (type) => {
-    return _.isEqual(type, Types.Major) || _.isEqual(type, Types.Minor)
-        ? ""
-        : type;
-}
-
-const noteToNumber = (note) => {
-    switch (note) {
-        case Notes.C:
-            return 1;
-        case Notes.D:
-            return 3;
-        case Notes.E:
-            return 5;    
-        case Notes.F:
-            return 6;
-        case Notes.G:
-            return 8;
-        case Notes.A:
-            return 10;
-        case Notes.B:
-            return 12;     
-        default:
-            throw Error("Cannot convert to numeral");
-    }
-}
-
-const accidentalModifier = (accidental) => {
-    switch (accidental) {
-        case Accidentals.Flat:
-            return -1;
-        case Accidentals.Natural:
-            return 0;
-        case Accidentals.Sharp:
-            return 1;
-        default:
-            throw Error("Not an Accidental");
-    }
-}
-
-
-export const convertChordToNumerals = (note, accidental, type, keyNote, keyAccidental, keyType) => {
-    let num = noteToNumber(note) + accidentalModifier(accidental);
-    if (num > 12) {
-        num -= 12;
-    }
-    let tonic = noteToNumber(keyNote) + accidentalModifier(keyAccidental);
-    if (tonic > 12) {
-        tonic -= 12;
+export const generateAllKeyOptions = () => {
+    const options = [];
+    for (const note in Notes) {
+        for (const accidental in AccidentalsSimple) {
+            for (const type of KeyTypes) {
+                const option = Notes[note] + AccidentalsSimple[accidental] + Types[type]
+                options.push({ value: option, label: option});
+            }
+        }
     }
 
-    if (tonic > num) {
-        num += 12
-    }
-    const diff = 1 + Math.abs(num - tonic);
-    
-    if (_.isEqual(keyType, Types.Major)) {
-        return TypeCase[type] === Case.Upper 
-            ? numberToNumeralMajor(diff, accidental).toUpperCase() + displayNumericChordType(type)
-            : numberToNumeralMajor(diff, accidental).toLowerCase() + displayNumericChordType(type);
-    } else if (_.isEqual(keyType, Types.Minor)) {
-        return TypeCase[type] === Case.Upper 
-            ? numberToNumeralMinor(diff, accidental).toUpperCase() + displayNumericChordType(type)
-            : numberToNumeralMinor(diff, accidental).toLowerCase() + displayNumericChordType(type);
-    } else {
-        throw Error("Invalid key type, should be Major or Minor only");
-    }
+    return options;
 }

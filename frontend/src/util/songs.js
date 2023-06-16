@@ -37,6 +37,7 @@ export const parseSong = (data) => {
     return data;
 }
 
+// inplace modification of Chord object to chordString. Does not convert if chord object is undefined.
 export const songChordToChordString = (data) => {
     for (const section of data.sections) {
         if (section.key) {

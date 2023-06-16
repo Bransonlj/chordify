@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import { Accidentals, Notes, Types, generateAllChordOptions, generateAllKeyOptions, generateChordOptions, generateKeyTypeOptions } from '../../util/chords';
-import { redirect, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { generateAllChordOptions, generateAllKeyOptions } from '../../util/chords';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
 import Select from 'react-select'
 import { parseSong, songChordToChordString } from '../../util/songs';
@@ -112,8 +112,35 @@ const Section = ( { section, sectionIndex, control, register } ) => {
   )
 }
 
+const patchData = async (data, id) => {
+  const response = await fetch("/api/songs/" + id, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+    headers: {
+        "Content-Type": 'application/json'
+    }
+  })
+  if (!response.ok) {
+      throw Error("unable to add song");
+  }
+}
+
+const postData = async (data) => {
+  const response = await fetch("/api/songs/", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+        "Content-Type": 'application/json'
+    }
+  })
+  if (!response.ok) {
+      throw Error("unable to add song");
+  }
+}
+
 export default function SongForm2() {
   
+  const navigate = useNavigate();
   const { id } = useParams()
   const song = useLoaderData();
   const emptySong = {
@@ -129,46 +156,29 @@ export default function SongForm2() {
     }]
   }
 
-  const { control, register, formState: { errors }, handleSubmit } = useForm({
-    defaultValues: song ? songChordToChordString(song) : emptySong,
+  const { control, register, reset, formState: { errors }, handleSubmit } = useForm({
+    defaultValues: emptySong,
   });
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "sections", // unique name for your Field Array
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    console.log("refresh!")
+    reset(song ? songChordToChordString(song) : emptySong, { keepDefaultValues: true })
+  }, [song])
 
   const onSubmit = async (data) => {
 
     // rebuild data
     parseSong(data);
-    console.log(data);
 
     if (song) {
-      const response = await fetch("/api/songs/" + id, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": 'application/json'
-        }
-      })
-      if (!response.ok) {
-          throw Error("unable to add song");
-      }
-      navigate('/songs/' + id)
-
+      patchData(data, id);
+      navigate('/songs/' + id);
     } else {
-      const response = await fetch("/api/songs/", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": 'application/json'
-        }
-      })
-      if (!response.ok) {
-          throw Error("unable to add song");
-      }
+      postData(data);
       navigate('/songs/list', { replace: true });
     }
 
@@ -185,7 +195,6 @@ export default function SongForm2() {
         {fields.map((field, index) => (
           // important to include key with field's id
           <div key={field.id} className="songForm__sectionContainer"> 
-          {console.log(field)}
             <Section section={field} sectionIndex={index} control={control} register={register}></Section>
             <div className="songForm__sectionButtonContainer">
               <label onClick={() => remove(index)}>Delete Section</label>
