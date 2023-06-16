@@ -1,7 +1,37 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLoaderData, useNavigate, useParams, NavLink } from "react-router-dom";
-import { displayChord, convertChordToNumerals } from "../../util/chords";
 import "../../styles/pages/songs/SongDetail.css"
+import { Chord } from "../../util/classes/Chord";
+
+const ChordDetails = ({ chord, keyObject, isViewNumbers }) => {
+    const chordObject = new Chord(chord.note, chord.accidental, chord.type);
+
+    return (
+        <div className="songDetails__chordLyric">
+            <p className="songDetails__chord">{ isViewNumbers ? chordObject.displayChordNumeric(keyObject) : chordObject.displayChordAlphabetic() }</p>
+            <p className="songDetails__lyric">{ chord.lyric }</p>
+        </div>
+    )
+}
+
+const SectionDetails = ({ section, isViewNumbers }) => {
+    const keyObject = new Chord(section.key.note, section.key.accidental, section.key.type);
+
+    return (
+        <div key={ section._id } className="songDetails__section">
+            <div className="songDetails__sectionHeader">
+                <h4>{ section.name }</h4>
+                <p>key: { keyObject.displayChordAlphabetic() }</p>
+            </div>
+            <div className="songDetails__chordContainer">
+                { section.chords.map(chord => (
+                        <ChordDetails key={chord._id} chord={chord} keyObject={keyObject} isViewNumbers={isViewNumbers} />
+                )) } 
+            </div>
+        </div>
+    )
+}
+
 const SongDetails = () => {
 
     const { id } = useParams();
@@ -24,41 +54,6 @@ const SongDetails = () => {
         navigate("/songs/list");
     }
 
-    const viewChordLetter = (chord) => {
-
-        return (
-            <div key={ chord._id } className="songDetails__chordLyric">
-                <p className="songDetails__chord">{ displayChord(chord.note, chord.accidental, chord.type) }</p>
-                <p className="songDetails__lyric">{ chord.lyric }</p>
-            </div>
-        )
-    }
-
-    const viewChordNumbers = (chord, section) => {
-        return (
-            <div key={ chord._id } className="songDetails__chordLyric">
-                <p className="songDetails__chord">{ convertChordToNumerals(chord.note, chord.accidental, chord.type, section.key.note, section.key.accidental, section.key.type) }</p>
-                <p className="songDetails__lyric">{ chord.lyric }</p>
-            </div>
-        )
-    }
-
-    const displaySection = (section, sectionIndex) => {
-        return (
-            <div key={ section._id } className="songDetails__section">
-                <div className="songDetails__sectionHeader">
-                    <h4>{ section.name }</h4>
-                    <p>key: { displayChord(section.key.note, section.key.accidental, section.key.type) }</p>
-                </div>
-                <div className="songDetails__chordContainer">
-                    { isViewNumbers 
-                        ? section.chords.map(chord => viewChordNumbers(chord, section)) 
-                        : section.chords.map(viewChordLetter) }
-                </div>
-            </div>
-        )
-    }
-
     return ( 
         <div>
             {song && <div className="songDetails">
@@ -72,7 +67,9 @@ const SongDetails = () => {
                             <NavLink to={`/songs/edit/${id}`} className="songDetails__editButton">edit</NavLink>
                             <button onClick={deleteSong} className="songDetails__deleteButton">Delete</button>
                         </div>
-                        { song.sections.map((section, sectionIndex) => displaySection(section, sectionIndex)) }
+                        { song.sections.map(section => (
+                                <SectionDetails key={section._id} section={section} isViewNumbers={isViewNumbers} />
+                        )) }
                         
                     
             </div>}

@@ -9,7 +9,7 @@ const SongList = () => {
     return ( 
         <div className="songList">
             <h2 className="songList__title">All Songs</h2>
-            <Form method="get" action="/songs" className="songList__filterForm">
+            <Form method="get" action="/songs/list" className="songList__filterForm">
                 <label>Search: </label>
                 <input name="search"></input>
                 <label>by: </label>
@@ -38,7 +38,6 @@ const SongList = () => {
 
 export const songListLoader = async ({ request }) => {
     const url = new URL(request.url);
-    console.log(url.search);
     //const response = await fetch("/api/songs/" + id);
     const response = await fetch("/api/songs" + url.search);
     
