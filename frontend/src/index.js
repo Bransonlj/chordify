@@ -15,9 +15,8 @@ import SongList, { songListLoader } from './pages/songs/SongList';
 import SongError from './pages/songs/song-error';
 import SongRoute from './routes/song-route';
 import About from './pages/about/about';
-import SongForm, { SongFormAction } from './pages/songs/SongForm';
 import Home from './pages/Home';
-import SongForm2 from './pages/songs/SongForm2';
+import SongForm from './pages/songs/SongForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,10 +26,9 @@ const router = createBrowserRouter(
     <Route path="songs" element={<SongRoute />} errorElement={<SongError />}>
       <Route index element={ <Navigate to="/songs/list" /> } ></Route>
       <Route path="list" element={<SongList />} loader={ songListLoader }></Route>
-      <Route path="create" element={<SongForm />} action={ SongFormAction }></Route> 
-      <Route path="create2" element={<SongForm2 />}></Route> 
+      <Route path="create" element={<SongForm />}></Route> 
       <Route path=":id" element={<SongDetails />} loader={ songDetailsLoader } ></Route>
-      <Route path="edit/:id" element={ <SongForm2 /> } loader={ songDetailsLoader } ></Route>
+      <Route path="edit/:id" element={ <SongForm /> } loader={ songDetailsLoader } ></Route>
     </Route>
 
     <Route path="about" element={<About />}></Route>
