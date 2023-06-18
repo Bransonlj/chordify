@@ -21,11 +21,11 @@ export class ChordType {
         MINOR_SIXTH: new ChordType("m6", ChordType.Casings.LOWER),
     }
 
-    constructor(name, casing) {
-        this.name = name;
-        this.casing = casing;
-    }
-
+    /**
+     * Factory method to generate ChordType object from string.
+     * @param {string} typeString 
+     * @returns ChordType object
+     */
     static fromString(typeString) {
         for (const typeKey in ChordType.Types) {
             if (typeString === ChordType.Types[typeKey].name) {
@@ -34,6 +34,16 @@ export class ChordType {
         }
 
         throw new Error("invalid type string given");
+    }
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {string} casing 
+     */
+    constructor(name, casing) {
+        this.name = name;
+        this.casing = casing;
     }
 
     toString() {

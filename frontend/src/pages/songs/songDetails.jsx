@@ -3,18 +3,18 @@ import { useLoaderData, useNavigate, useParams, NavLink } from "react-router-dom
 import "../../styles/pages/songs/SongDetail.css"
 import { Chord } from "../../util/classes/Chord";
 
-const ChordDetails = ({ chord, keyObject, isViewNumbers }) => {
+const ChordDetails = ({ chord, keyObject, isViewNumbers, transposeAmount }) => {
     const chordObject = Chord.fromString(chord.note + chord.accidental + chord.type);
 
     return (
         <div className="songDetails__chordLyric">
-            <p className="songDetails__chord">{ isViewNumbers ? chordObject.toNumeric(keyObject) : chordObject.toString() }</p>
+            <p className="songDetails__chord">{ isViewNumbers ? chordObject.toNumeric(keyObject) : chordObject.toString(transposeAmount) }</p>
             <p className="songDetails__lyric">{ chord.lyric }</p>
         </div>
     )
 }
 
-const SectionDetails = ({ section, isViewNumbers }) => {
+const SectionDetails = ({ section, isViewNumbers, transposeAmount }) => {
     const keyObject = Chord.fromString(section.key.note + section.key.accidental + section.key.type);
 
     return (
@@ -25,7 +25,13 @@ const SectionDetails = ({ section, isViewNumbers }) => {
             </div>
             <div className="songDetails__chordContainer">
                 { section.chords.map(chord => (
-                        <ChordDetails key={chord._id} chord={chord} keyObject={keyObject} isViewNumbers={isViewNumbers} />
+                        <ChordDetails 
+                            key={chord._id} 
+                            chord={chord} 
+                            keyObject={keyObject} 
+                            isViewNumbers={isViewNumbers} 
+                            transposeAmount={transposeAmount}
+                        />
                 )) } 
             </div>
         </div>
@@ -38,7 +44,7 @@ const SongDetails = () => {
 
     const [isViewNumbers, setIsViewNumbers] = useState(false);
 
-    const [transpose, setTranspose] = useState(0);
+    const [transposeAmount, setTransposeAmount] = useState(0);
 
     const song = useLoaderData();
 
@@ -68,13 +74,18 @@ const SongDetails = () => {
                             
                             <label onClick={() => setIsViewNumbers(!isViewNumbers)} className="songDetails__toggleView">Toggle Chord View</label>
                             <NavLink to={`/songs/edit/${id}`} className="songDetails__editButton">edit</NavLink>
-                            <button onClick={deleteSong} className="songDetails__deleteButton">Delete</button>
-                            <label onClick={() => setTranspose(transpose - 1)}>-1</label>
-                            <label>{ transpose }</label>
-                            <label onClick={() => setTranspose(transpose + 1)}>+1</label>
+                            <label onClick={deleteSong} className="songDetails__deleteButton">Delete</label>
+                            <label onClick={() => setTransposeAmount(transposeAmount - 1)}>-1</label>
+                            <label>{ `Transpose ${transposeAmount}` }</label>
+                            <label onClick={() => setTransposeAmount(transposeAmount + 1)}>+1</label>
                         </div>
                         { song.sections.map(section => (
-                                <SectionDetails key={section._id} section={section} isViewNumbers={isViewNumbers} />
+                                <SectionDetails 
+                                    key={section._id} 
+                                    section={section} 
+                                    isViewNumbers={isViewNumbers} 
+                                    transposeAmount={transposeAmount}
+                                />
                         )) }
             </div>}
         </div>

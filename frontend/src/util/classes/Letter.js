@@ -14,6 +14,22 @@ export class Letter {
         G: new Letter('G', 8),
     };
 
+    static InvalidLetter = new Letter('INVALID', 0);
+
+    static fromValue(value) {
+        for (const key in Letter.Letters) {
+            if (value === Letter.Letters[key].value) {
+                return Letter.Letters[key];
+            }
+        }
+        return Letter.InvalidLetter;
+    }
+
+    /**
+     * Factory method to generate Letter object from string.
+     * @param {string} letterString character from A - G
+     * @returns Letter object
+     */
     static fromString(letterString) {
         for (const key in Letter.Letters) {
             if (letterString === Letter.Letters[key].name) {
@@ -25,5 +41,13 @@ export class Letter {
 
     toString() {
         return this.name;
+    }
+
+    isEqual(obj) {
+        if (obj instanceof Letter) {
+            return obj === Letter.InvalidLetter ? false : obj.name === this.name && obj.value === this.value;
+        } else {
+            return false;
+        }
     }
 }

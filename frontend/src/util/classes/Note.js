@@ -3,6 +3,11 @@ import { Letter } from "./Letter";
 import { ChordType } from './ChordType';
 
 export class Note {
+    /**
+     * 
+     * @param {Letter} letter 
+     * @param {Accidental} accidental 
+     */
     constructor(letter, accidental) {
         if (letter instanceof Letter && accidental instanceof Accidental) {
             this.letter = letter;
@@ -13,17 +18,39 @@ export class Note {
 
     }
 
+    /**
+     * Factory method to generate a Note based on given value. Note Accidental will always be Natural or Sharp.
+     * @param {number} value 
+     * @returns Note object
+     */
     static valueToNote(value) {
-        const cleanedValue = (value - 1) % 12 + 1;
+        // if value less than 1, it will be invalid, so add 12.
+        let cleanedValue = value;
+        while (cleanedValue < 1) {
+            cleanedValue += 12
+        }
+        cleanedValue = (cleanedValue - 1) % 12 + 1;
         for (const key in Letter.Letters) {
-            if (cleanedValue === Letter.Letters[key].value || cleanedValue === Letter.Letters[key].value + 1) {
+
+            // if currentValue corresponds to C or F, do not allow B# or E#.
+            const isLettersCF = Letter.fromValue(cleanedValue).isEqual(Letter.Letters.C) || Letter.fromValue(cleanedValue).isEqual(Letter.Letters.F)
+
+            if (cleanedValue === Letter.Letters[key].value || 
+                    (cleanedValue === Letter.Letters[key].value + 1 && !isLettersCF)) {
                 const letter = Letter.Letters[key];
                 const accidental = Accidental.fromValue(cleanedValue - letter.value);
                 return new Note(letter, accidental);
             }
         }
+
+        console.log("error unable to convert to Note, cleanedValue, value: ", cleanedValue, value)
     }
 
+    /**
+     * Factory method to generate Note object from string.
+     * @param {string} noteString 
+     * @returns Note object
+     */
     static fromString(noteString) {
         return new Note(Letter.fromString(noteString[0]), Accidental.fromString(noteString.slice(1)));
     }

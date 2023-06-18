@@ -50,6 +50,11 @@ export class Chord {
         return options;
     }
 
+    /**
+     * Factory method to generate Chord object from string.
+     * @param {string} chordString 
+     * @returns Chord object
+     */
     static fromString(chordString) {
         let nextIndex = 1;
         if (chordString[1] === Accidental.Accidentals.SHARP.toString() || chordString[1] === Accidental.Accidentals.FLAT.toString()) {
@@ -64,9 +69,9 @@ export class Chord {
     }
 
     /**
-     * 
+     * Generates the numeric form of the Chord using given keyChord as tonic.
      * @param {Chord} keyChord
-     * @returns 
+     * @returns string of numeric form of chord
      */
     toNumeric(keyChord) {
 
@@ -76,6 +81,10 @@ export class Chord {
         return this.note.toNumeric(keyChord.note, keyChord.type, this.type) + this.type.toString();
     }
 
+    /**
+     * Converts Chord object to generic typeless javascript object
+     * @returns object with params: note, accidental, type
+     */
     toGenericObject() {
         return {
             note: this.note.letter.toString(),
