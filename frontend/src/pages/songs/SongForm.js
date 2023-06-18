@@ -5,9 +5,10 @@ import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
 import Select from 'react-select'
 import { parseSong, songChordToChordString } from '../../util/songs';
+import { Chord } from '../../util/classes/Chord';
 
-const chordOptions = generateAllChordOptions();
-const keyOptions = generateAllKeyOptions();
+const chordOptions = Chord.generateAllChordOptions();
+const keyOptions = Chord.generateAllKeyOptions();
 
 const emptySong = {
   name: '',
@@ -112,7 +113,7 @@ function DeleteSection({ control, remove, sectionIndex }) {
   )
 }
 
-const Chord = ({ chord, sectionIndex, chordIndex, register, control }) => {
+const ChordForm = ({ chord, sectionIndex, chordIndex, register, control }) => {
   return (
     <>
       <label>Chord</label>
@@ -138,7 +139,7 @@ const Chord = ({ chord, sectionIndex, chordIndex, register, control }) => {
   )
 }
 
-const Section = ( { section, sectionIndex, control, register } ) => {
+const SectionForm = ( { section, sectionIndex, control, register } ) => {
 
   const name = `sections.${sectionIndex}.chords`;
 
@@ -172,7 +173,7 @@ const Section = ( { section, sectionIndex, control, register } ) => {
 
       { fields.map((field, index) => (
         <div key={field.id} className="songForm__chordContainer">
-            <Chord chord={field} sectionIndex={sectionIndex} chordIndex={index} register={register} control={control}></Chord>
+            <ChordForm chord={field} sectionIndex={sectionIndex} chordIndex={index} register={register} control={control} />
             <DeleteChord 
               className="songForm__deleteChordButton" 
               control={control} remove={remove} 
@@ -263,7 +264,7 @@ export default function SongForm2() {
         {fields.map((field, index) => (
           // important to include key with field's id
           <div key={field.id} className="songForm__sectionContainer"> 
-            <Section section={field} sectionIndex={index} control={control} register={register}></Section>
+            <SectionForm section={field} sectionIndex={index} control={control} register={register} />
             <div className="songForm__sectionButtonContainer">
               <DeleteSection 
                 control={control}

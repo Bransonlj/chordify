@@ -4,24 +4,24 @@ import "../../styles/pages/songs/SongDetail.css"
 import { Chord } from "../../util/classes/Chord";
 
 const ChordDetails = ({ chord, keyObject, isViewNumbers }) => {
-    const chordObject = new Chord(chord.note, chord.accidental, chord.type);
+    const chordObject = Chord.fromString(chord.note + chord.accidental + chord.type);
 
     return (
         <div className="songDetails__chordLyric">
-            <p className="songDetails__chord">{ isViewNumbers ? chordObject.displayChordNumeric(keyObject) : chordObject.displayChordAlphabetic() }</p>
+            <p className="songDetails__chord">{ isViewNumbers ? chordObject.toNumeric(keyObject) : chordObject.toString() }</p>
             <p className="songDetails__lyric">{ chord.lyric }</p>
         </div>
     )
 }
 
 const SectionDetails = ({ section, isViewNumbers }) => {
-    const keyObject = new Chord(section.key.note, section.key.accidental, section.key.type);
+    const keyObject = Chord.fromString(section.key.note + section.key.accidental + section.key.type);
 
     return (
         <div key={ section._id } className="songDetails__section">
             <div className="songDetails__sectionHeader">
                 <h4>{ section.name }</h4>
-                <p>key: { keyObject.displayChordAlphabetic() }</p>
+                <p>key: { keyObject.toString() }</p>
             </div>
             <div className="songDetails__chordContainer">
                 { section.chords.map(chord => (
@@ -37,6 +37,8 @@ const SongDetails = () => {
     const { id } = useParams();
 
     const [isViewNumbers, setIsViewNumbers] = useState(false);
+
+    const [transpose, setTranspose] = useState(0);
 
     const song = useLoaderData();
 
@@ -67,6 +69,9 @@ const SongDetails = () => {
                             <label onClick={() => setIsViewNumbers(!isViewNumbers)} className="songDetails__toggleView">Toggle Chord View</label>
                             <NavLink to={`/songs/edit/${id}`} className="songDetails__editButton">edit</NavLink>
                             <button onClick={deleteSong} className="songDetails__deleteButton">Delete</button>
+                            <label onClick={() => setTranspose(transpose - 1)}>-1</label>
+                            <label>{ transpose }</label>
+                            <label onClick={() => setTranspose(transpose + 1)}>+1</label>
                         </div>
                         { song.sections.map(section => (
                                 <SectionDetails key={section._id} section={section} isViewNumbers={isViewNumbers} />
