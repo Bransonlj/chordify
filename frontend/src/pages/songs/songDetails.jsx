@@ -81,6 +81,7 @@ const SongDetails = () => {
      );
 }
 
+// router loader function that fetches song data from api using ID given from params.
 export const songDetailsLoader = async ({ params }) => {
     const { id } = params;
     const response = await fetch("/api/songs/" + id);

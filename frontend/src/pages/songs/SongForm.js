@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import { generateAllChordOptions, generateAllKeyOptions } from '../../util/chords';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
 import Select from 'react-select'
 import { parseSong, songChordToChordString } from '../../util/songs';
 import { Chord } from '../../util/classes/Chord';
+
+// ----------- constants -----------
 
 const chordOptions = Chord.generateAllChordOptions();
 const keyOptions = Chord.generateAllKeyOptions();
@@ -37,27 +38,7 @@ const emptyChord = {
   lyric: '',
 };
 
-function CloneChord({ control, insert, sectionIndex, chordIndex }) {
-  const chordValue = useWatch({
-    control,
-    name: `sections.${sectionIndex}.chords.${chordIndex}`
-  });
-
-  return (
-    <label onClick={() => insert(chordIndex + 1, chordValue)}>Copy</label>
-  )
-}
-
-function CloneSection({ control, insert, sectionIndex }) {
-  const sectionValue = useWatch({
-    control,
-    name: `sections.${sectionIndex}`
-  });
-
-  return (
-    <label onClick={() => insert(sectionIndex + 1, sectionValue)}>Copy</label>
-  )
-}
+// ---------- Component Helper Functions ------------
 
 const isDefaultChord = (chord) => {
   return emptyChord.chordString === chord.chordString && emptyChord.lyric === chord.lyric;
@@ -91,6 +72,36 @@ const handleDeleteSection = (remove, index, section) => {
   }
 }
 
+// ---------- Submission helper functions ----------
+
+const patchData = async (data, id) => {
+  const response = await fetch("/api/songs/" + id, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+    headers: {
+        "Content-Type": 'application/json'
+    }
+  })
+  if (!response.ok) {
+      throw Error("unable to add song");
+  }
+}
+
+const postData = async (data) => {
+  const response = await fetch("/api/songs/", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+        "Content-Type": 'application/json'
+    }
+  })
+  if (!response.ok) {
+      throw Error("unable to add song");
+  }
+}
+
+// -------------- COMPONENTS: DeleteChord, DeleteSection, CloneChord, CloneSection, ChordForm, SectionForm, SongForm ---------------
+
 function DeleteChord({ control, remove, sectionIndex, chordIndex }) {
   const chordValue = useWatch({
     control, 
@@ -113,7 +124,29 @@ function DeleteSection({ control, remove, sectionIndex }) {
   )
 }
 
-const ChordForm = ({ chord, sectionIndex, chordIndex, register, control }) => {
+function CloneChord({ control, insert, sectionIndex, chordIndex }) {
+  const chordValue = useWatch({
+    control,
+    name: `sections.${sectionIndex}.chords.${chordIndex}`
+  });
+
+  return (
+    <label onClick={() => insert(chordIndex + 1, chordValue)}>Copy</label>
+  )
+}
+
+function CloneSection({ control, insert, sectionIndex }) {
+  const sectionValue = useWatch({
+    control,
+    name: `sections.${sectionIndex}`
+  });
+
+  return (
+    <label onClick={() => insert(sectionIndex + 1, sectionValue)}>Copy</label>
+  )
+}
+
+function ChordForm ({ chord, sectionIndex, chordIndex, register, control }) {
   return (
     <>
       <label>Chord</label>
@@ -139,7 +172,7 @@ const ChordForm = ({ chord, sectionIndex, chordIndex, register, control }) => {
   )
 }
 
-const SectionForm = ( { section, sectionIndex, control, register } ) => {
+function SectionForm( { section, sectionIndex, control, register } ) {
 
   const name = `sections.${sectionIndex}.chords`;
 
@@ -191,32 +224,6 @@ const SectionForm = ( { section, sectionIndex, control, register } ) => {
     </>
     
   )
-}
-
-const patchData = async (data, id) => {
-  const response = await fetch("/api/songs/" + id, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-    headers: {
-        "Content-Type": 'application/json'
-    }
-  })
-  if (!response.ok) {
-      throw Error("unable to add song");
-  }
-}
-
-const postData = async (data) => {
-  const response = await fetch("/api/songs/", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-        "Content-Type": 'application/json'
-    }
-  })
-  if (!response.ok) {
-      throw Error("unable to add song");
-  }
 }
 
 export default function SongForm2() {
