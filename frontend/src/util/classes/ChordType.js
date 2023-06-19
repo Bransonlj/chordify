@@ -6,13 +6,13 @@ export class ChordType {
     }
 
     static KeyTypes = {
-        MAJOR: new ChordType("maj", ChordType.Casings.UPPER),
-        MINOR: new ChordType("min", ChordType.Casings.LOWER),
+        MAJOR: new ChordType("", ChordType.Casings.UPPER),
+        MINOR: new ChordType("m", ChordType.Casings.LOWER),
     }
 
     static Types = {
-        MAJOR: new ChordType("maj", ChordType.Casings.UPPER),
-        MINOR: new ChordType("min", ChordType.Casings.LOWER),
+        MAJOR: new ChordType("", ChordType.Casings.UPPER),
+        MINOR: new ChordType("m", ChordType.Casings.LOWER),
         DIMINISHED: new ChordType("dim", ChordType.Casings.LOWER),
         MAJOR_SEVENTH: new ChordType("maj7", ChordType.Casings.UPPER),
         MINOR_SEVENTH: new ChordType("m7", ChordType.Casings.LOWER),

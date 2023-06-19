@@ -21,7 +21,7 @@ const displayCapo = (transposeAmount, capo) => {
 }
 
 const ChordDetails = ({ chord, keyObject, isViewNumbers, transposeAmount }) => {
-    const chordObject = Chord.fromString(chord.note + chord.accidental + chord.type);
+    const chordObject = Chord.fromString(chord.chordString);
 
     return (
         <div className="songDetails__chordLyric">
@@ -32,7 +32,7 @@ const ChordDetails = ({ chord, keyObject, isViewNumbers, transposeAmount }) => {
 }
 
 const SectionDetails = ({ section, isViewNumbers, transposeAmount }) => {
-    const keyObject = Chord.fromString(section.key.note + section.key.accidental + section.key.type);
+    const keyObject = Chord.fromString(section.keyString);
 
     return (
         <div key={ section._id } className="songDetails__section">

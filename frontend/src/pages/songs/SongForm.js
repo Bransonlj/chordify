@@ -243,14 +243,11 @@ export default function SongForm() {
 
   useEffect(() => {
     console.log("refresh!")
-    reset(song ? songChordToChordString(song) : emptySong, { keepDefaultValues: true })
+    reset(song ? song : emptySong, { keepDefaultValues: true })
     console.log(song)
   }, [song])
 
   const onSubmit = async (data) => {
-
-    // rebuild data
-    parseSong(data);
 
     if (song) {
       patchData(data, id);
