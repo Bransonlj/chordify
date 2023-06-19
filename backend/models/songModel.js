@@ -11,6 +11,7 @@ songSchema = new Schema({
         $type: String,
         required: true,
     },
+    capo: Number,
     sections: [{
         name: String,
         key: {

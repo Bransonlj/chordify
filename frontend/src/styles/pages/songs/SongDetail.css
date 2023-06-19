@@ -15,7 +15,7 @@
     gap: 10px;
 }
 
-.songDetails__songSettings * {
+.songDetails__songSettings label, .songDetails__songSettings a {
     background-color: aquamarine;
     border: 1px solid black;
     border-radius: 4px;
@@ -61,6 +61,11 @@
 
 .songDetails__sectionHeader h4, p {
     margin: 15px;
+}
+
+.songDetails__capo {
+    display: flex;
+    flex-direction: row;
 }
 
 

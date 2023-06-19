@@ -14,6 +14,7 @@ const keyOptions = Chord.generateAllKeyOptions();
 const emptySong = {
   name: '',
   artist: '',
+  capo: 0,
   sections: [{
     name: '',
     keyString: '',
@@ -226,7 +227,7 @@ function SectionForm( { section, sectionIndex, control, register } ) {
   )
 }
 
-export default function SongForm2() {
+export default function SongForm() {
   
   const navigate = useNavigate();
   const { id } = useParams()
@@ -243,6 +244,7 @@ export default function SongForm2() {
   useEffect(() => {
     console.log("refresh!")
     reset(song ? songChordToChordString(song) : emptySong, { keepDefaultValues: true })
+    console.log(song)
   }, [song])
 
   const onSubmit = async (data) => {
@@ -268,6 +270,8 @@ export default function SongForm2() {
         <input {...register("name")} />
         <label>Artist</label>
         <input {...register("artist")} />
+        <label>Capo</label>
+        <input {...register("capo")} type='number' />
         {fields.map((field, index) => (
           // important to include key with field's id
           <div key={field.id} className="songForm__sectionContainer"> 

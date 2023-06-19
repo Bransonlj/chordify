@@ -3,6 +3,23 @@ import { useLoaderData, useNavigate, useParams, NavLink } from "react-router-dom
 import "../../styles/pages/songs/SongDetail.css"
 import { Chord } from "../../util/classes/Chord";
 
+const displayCapo = (transposeAmount, capo) => {
+
+    if (capo - transposeAmount === 0) {
+        return "no capo"
+    } 
+
+    let newCapo = capo - transposeAmount;
+    if (newCapo >= 12) {
+        newCapo -=12;
+    } else if (newCapo < 0) {
+        newCapo += 12;
+    }
+
+    return newCapo;
+
+}
+
 const ChordDetails = ({ chord, keyObject, isViewNumbers, transposeAmount }) => {
     const chordObject = Chord.fromString(chord.note + chord.accidental + chord.type);
 
@@ -21,7 +38,8 @@ const SectionDetails = ({ section, isViewNumbers, transposeAmount }) => {
         <div key={ section._id } className="songDetails__section">
             <div className="songDetails__sectionHeader">
                 <h4>{ section.name }</h4>
-                <p>key: { keyObject.toString() }</p>
+                <p>key: { keyObject.toString(transposeAmount) }</p>
+                {transposeAmount !== 0 && <p>{`(${keyObject.toString()})`}</p>}
             </div>
             <div className="songDetails__chordContainer">
                 { section.chords.map(chord => (
@@ -69,15 +87,21 @@ const SongDetails = () => {
                         <div className="songDetails__header">
                             <h2 className="songDetails__songName">{ song.name }</h2>
                             <p className="songDetails__artist">Artist: { song.artist } </p>
+                            <div className="songDetails__capo">
+                                <p>Capo: {song.capo === 0 ? "No capo" : song.capo}</p>
+                                <p>{transposeAmount !== 0 ? `(${displayCapo(transposeAmount, song.capo)})`:""}</p>
+                            </div>
                         </div>
                         <div className="songDetails__songSettings">
                             
                             <label onClick={() => setIsViewNumbers(!isViewNumbers)} className="songDetails__toggleView">Toggle Chord View</label>
                             <NavLink to={`/songs/edit/${id}`} className="songDetails__editButton">edit</NavLink>
                             <label onClick={deleteSong} className="songDetails__deleteButton">Delete</label>
-                            <label onClick={() => setTransposeAmount(transposeAmount - 1)}>-1</label>
-                            <label>{ `Transpose ${transposeAmount}` }</label>
-                            <label onClick={() => setTransposeAmount(transposeAmount + 1)}>+1</label>
+                            <div>
+                                <label onClick={() => setTransposeAmount(transposeAmount <= -11 ? 0 : transposeAmount - 1)}>-1</label>
+                                <label>{ `Transpose ${transposeAmount}` }</label>
+                                <label onClick={() => setTransposeAmount(transposeAmount >= 11 ? 0 :transposeAmount + 1)}>+1</label>
+                            </div>
                         </div>
                         { song.sections.map(section => (
                                 <SectionDetails 

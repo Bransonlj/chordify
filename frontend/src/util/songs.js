@@ -46,7 +46,8 @@ export const songChordToChordString = (data) => {
         }
 
         for (const chord of section.chords) {
-            if (chord.note && chord.accidental && chord.type) {
+            // possibility of accidental being empty string, considered undefined.
+            if (chord.note && (chord.accidental || chord.accidental === "") && chord.type) {
                 chord.chordString = chord.note + chord.accidental + chord.type
 
                 delete chord.note;
