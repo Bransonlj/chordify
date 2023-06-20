@@ -14,15 +14,16 @@ export class Letter {
         G: new Letter('G', 8),
     };
 
-    static InvalidLetter = new Letter('INVALID', 0);
+    static EMPTY_LETTER = new Letter('EMPTY', 0);
 
+    //should throw an error instead to be handled.
     static fromValue(value) {
         for (const key in Letter.Letters) {
             if (value === Letter.Letters[key].value) {
                 return Letter.Letters[key];
             }
         }
-        return Letter.InvalidLetter;
+        throw new Error("Invalid value does correspond to any letter")
     }
 
     /**
@@ -45,7 +46,7 @@ export class Letter {
 
     isEqual(obj) {
         if (obj instanceof Letter) {
-            return obj === Letter.InvalidLetter ? false : obj.name === this.name && obj.value === this.value;
+            return obj.name === this.name && obj.value === this.value;
         } else {
             return false;
         }

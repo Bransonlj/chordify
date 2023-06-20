@@ -18,19 +18,34 @@ export class Chord {
         this.type = type;
     }
 
+    // possibly save output to csv so dont have to run everytime
     static generateAllChordOptions() {
+        console.log("generating chord options....")
         const options = [];
         for (const letterKey in Letter.Letters) {
             for (const accidentalKey in Accidental.Accidentals) {
                 for (const typeKey in ChordType.Types) {
                     const noteOptionString = Letter.Letters[letterKey].toString() 
-                            + Accidental.Accidentals[accidentalKey].toString() 
-                            + ChordType.Types[typeKey].toString();
-                    options.push({ value: noteOptionString, label: noteOptionString});
+                             + Accidental.Accidentals[accidentalKey].toString() 
+                    const chordOptionString = noteOptionString + ChordType.Types[typeKey].toString();
+                    options.push({ value: chordOptionString, label: chordOptionString});
+                    // Same chord with bassNote
+                    for (const bassLetterKey in Letter.Letters) {
+                        for (const bassAccidentalKey in Accidental.Accidentals) {
+                            // bass note should not be same as chord note, eg. A/A, B#/B#
+                            if (noteOptionString !== Letter.Letters[bassLetterKey].toString() 
+                                    + Accidental.Accidentals[bassAccidentalKey].toString()) {
+                                const bassNoteOptionString = chordOptionString + "/"
+                                        + Letter.Letters[bassLetterKey].toString() 
+                                        + Accidental.Accidentals[bassAccidentalKey].toString();
+                                options.push({ value: bassNoteOptionString, label: bassNoteOptionString});
+                            }
+                        }
+                    }
                 }
             }
         }
-    
+        console.log(options)
         return options;
     }
 
@@ -78,7 +93,7 @@ export class Chord {
         if (!keyChord instanceof Chord) {
             throw Error("invalid key object given");
         }
-        return this.note.toNumeric(keyChord.note, keyChord.type, this.type) + this.type.toString();
+        return this.note.toNumeric(keyChord.note, keyChord.type.isUpper, this.type.isUpper) + this.type.toString();
     }
 
     /**

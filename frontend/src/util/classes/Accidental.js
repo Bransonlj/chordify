@@ -5,6 +5,8 @@ export class Accidental{
         SHARP: new Accidental("#", 1),
     }
 
+    static EMPTY_ACCIDENTAL = new Accidental("EMPTY", 9)
+
     /**
      * Factory method to generate Accidental object from value.
      * @param {number} value -1/0/1

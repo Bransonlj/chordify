@@ -1,6 +1,5 @@
 import { Accidental } from "./Accidental";
 import { Letter } from "./Letter";
-import { ChordType } from './ChordType';
 
 export class Note {
     /**
@@ -15,8 +14,9 @@ export class Note {
         } else {
             throw new Error("Invalid arguements")
         }
-
     }
+
+    static EMPTY_NOTE = new Note(Letter.EMPTY_LETTER, Accidental.EMPTY_ACCIDENTAL);
 
     /**
      * Factory method to generate a Note based on given value. Note Accidental will always be Natural or Sharp.
@@ -33,8 +33,8 @@ export class Note {
         for (const key in Letter.Letters) {
 
             // if currentValue corresponds to C or F, do not allow B# or E#.
-            const isLettersCF = Letter.fromValue(cleanedValue).isEqual(Letter.Letters.C) || Letter.fromValue(cleanedValue).isEqual(Letter.Letters.F)
-
+            const isLettersCF = cleanedValue === Letter.Letters.C.value || cleanedValue === Letter.Letters.F.value;
+            
             if (cleanedValue === Letter.Letters[key].value || 
                     (cleanedValue === Letter.Letters[key].value + 1 && !isLettersCF)) {
                 const letter = Letter.Letters[key];
@@ -63,6 +63,18 @@ export class Note {
         }
     }
 
+    isEmpty() {
+        return this === Note.EMPTY_NOTE;
+    }
+
+    isEqual(obj) {
+        if (obj instanceof Note) {
+            return this.letter.isEqual(obj.letter) && this.accidental.isEqual(obj.accidental);
+        } else {
+            return false;
+        }
+    }
+
     getValue() {
         return this.letter.value + this.accidental.value;
     }
@@ -70,8 +82,10 @@ export class Note {
     /**
      * Converts Note to numeric form using given key as root and returns the numeric note as a string.
      * @param {Note} keyNote 
+     * @param {boolean} isMajor whether the key is a major key, else it is a minor key.
+     * @param {boolean} isUpper whether the numeric representation should be upper case or not.
      */
-    toNumeric(keyNote, keyType, chordType) {
+    toNumeric(keyNote, isMajor, isUpper) {
         let chordValue = this.getValue()
         const tonicValue = keyNote.getValue();
         if (tonicValue > chordValue) {
@@ -79,22 +93,13 @@ export class Note {
         }
 
         const difference = 1 + chordValue - tonicValue;
-        
-        let isMajor = true;
-        if (keyType.isEqual(ChordType.Types.MAJOR)) {
-            isMajor = true;
-        } else if (keyType.isEqual(ChordType.Types.MINOR)) {
-            isMajor = false;
-        } else {
-            throw new Error("invalid key type");
-        }
 
         const [accidentalString, numeralString] = isMajor 
                 ? numberToNumeralMajor(difference, this.accidental) 
                 : numberToNumeralMinor(difference, this.accidental);
 
         return accidentalString 
-                + (chordType.casing === ChordType.Casings.UPPER 
+                + (isUpper
                 ? numeralString.toUpperCase() 
                 : numeralString.toLowerCase());
     } 
@@ -199,3 +204,5 @@ const numberToNumeralMinor = (num, accidental) => {
             : [Accidental.Accidentals.FLAT.toString(), Numerals.SEVEN];
     }
 }
+
+export default Note;

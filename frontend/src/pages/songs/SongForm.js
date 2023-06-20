@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
-import Select from 'react-select'
-import { parseSong, songChordToChordString } from '../../util/songs';
+import Select, {components} from 'react-select'
 import { Chord } from '../../util/classes/Chord';
 
 // ----------- constants -----------
@@ -148,6 +147,7 @@ function CloneSection({ control, insert, sectionIndex }) {
 }
 
 function ChordForm ({ chord, sectionIndex, chordIndex, register, control }) {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
   return (
     <>
       <label>Chord</label>
@@ -160,6 +160,14 @@ function ChordForm ({ chord, sectionIndex, chordIndex, register, control }) {
             options={ chordOptions }
             onChange={ selectedOption => onChange(selectedOption.value) }
             defaultValue={ chordOptions.find(({value}) => value === chord.chordString) }
+            onInputChange={(input) => {
+              if (input) {
+                setMenuIsOpen(true);
+              } else {
+                setMenuIsOpen(false);
+              }
+            }}
+            menuIsOpen={menuIsOpen}
           />
         ) }
       />
@@ -244,7 +252,6 @@ export default function SongForm() {
   useEffect(() => {
     console.log("refresh!")
     reset(song ? song : emptySong, { keepDefaultValues: true })
-    console.log(song)
   }, [song])
 
   const onSubmit = async (data) => {
