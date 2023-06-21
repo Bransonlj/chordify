@@ -36,7 +36,7 @@ export default function About() {
             cacheOptions 
             loadOptions={loadOptions} 
             defaultOptions
-            defaultValue={{value: "GG", label:"GTT"}}
+            placeholder="testing"
             onInputChange={(value) => {
               if (value) {
                 setMenuIsOpen(true);

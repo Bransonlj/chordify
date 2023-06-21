@@ -124,6 +124,7 @@ function SelectChord({ onChange, chord }) {
     loadOptions={loadOptions} 
     onChange={ selectedOption => onChange(selectedOption.value) }
     defaultValue={ chordOptions.find(({value}) => value === chord.chordString) }
+    placeholder="Enter..."
     defaultOptions 
     onInputChange={(value) => {
       if (value) {
