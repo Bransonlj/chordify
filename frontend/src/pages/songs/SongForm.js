@@ -3,6 +3,7 @@ import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
 import Select, {components} from 'react-select'
+import AsyncSelect from 'react-select/async'
 import { Chord } from '../../util/classes/Chord';
 
 // ----------- constants -----------
@@ -100,7 +101,41 @@ const postData = async (data) => {
   }
 }
 
+const filterColors = (inputValue) => {
+  return chordOptions.filter((i) =>
+    i.label.toLowerCase().startsWith(inputValue.toLowerCase())
+  );
+};
+
+const loadOptions = (inputValue, callback) => {
+  setTimeout(() => {
+    callback(filterColors(inputValue));
+  }, 1000);
+};
+
 // -------------- COMPONENTS: DeleteChord, DeleteSection, CloneChord, CloneSection, ChordForm, SectionForm, SongForm ---------------
+
+function SelectChord({ onChange, chord }) {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+
+  return (
+  <AsyncSelect 
+    cacheOptions 
+    loadOptions={loadOptions} 
+    onChange={ selectedOption => onChange(selectedOption.value) }
+    defaultValue={ chordOptions.find(({value}) => value === chord.chordString) }
+    defaultOptions 
+    onInputChange={(value) => {
+      if (value) {
+        setMenuIsOpen(true);
+      } else {
+        setMenuIsOpen(false);
+      }
+    }}
+    menuIsOpen={menuIsOpen}
+  />
+  )
+}
 
 function DeleteChord({ control, remove, sectionIndex, chordIndex }) {
   const chordValue = useWatch({
@@ -147,7 +182,6 @@ function CloneSection({ control, insert, sectionIndex }) {
 }
 
 function ChordForm ({ chord, sectionIndex, chordIndex, register, control }) {
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
   return (
     <>
       <label>Chord</label>
@@ -156,19 +190,7 @@ function ChordForm ({ chord, sectionIndex, chordIndex, register, control }) {
         control={ control }
 
         render={ ({ field: { onChange } }) => (
-          <Select
-            options={ chordOptions }
-            onChange={ selectedOption => onChange(selectedOption.value) }
-            defaultValue={ chordOptions.find(({value}) => value === chord.chordString) }
-            onInputChange={(input) => {
-              if (input) {
-                setMenuIsOpen(true);
-              } else {
-                setMenuIsOpen(false);
-              }
-            }}
-            menuIsOpen={menuIsOpen}
-          />
+          <SelectChord onChange={onChange} chord={chord}/>
         ) }
       />
       <div className="songForm__lyric">

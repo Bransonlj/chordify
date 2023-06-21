@@ -20,7 +20,6 @@ export class Chord {
 
     // possibly save output to csv so dont have to run everytime
     static generateAllChordOptions() {
-        console.log("generating chord options....")
         const options = [];
         for (const letterKey in Letter.Letters) {
             for (const accidentalKey in Accidental.Accidentals) {
@@ -45,7 +44,6 @@ export class Chord {
                 }
             }
         }
-        console.log(options)
         return options;
     }
 
