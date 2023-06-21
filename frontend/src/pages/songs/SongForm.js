@@ -1,17 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import { generateAllChordOptions, generateAllKeyOptions } from '../../util/chords';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import "../../styles/pages/songs/SongForm.css"
-import Select from 'react-select'
-import { parseSong, songChordToChordString } from '../../util/songs';
+import Select, {components} from 'react-select'
+import AsyncSelect from 'react-select/async'
+import { Chord } from '../../util/classes/Chord';
 
-const chordOptions = generateAllChordOptions();
-const keyOptions = generateAllKeyOptions();
+// ----------- constants -----------
+
+const chordOptions = Chord.generateAllChordOptions();
+const keyOptions = Chord.generateAllKeyOptions();
 
 const emptySong = {
   name: '',
   artist: '',
+  capo: 0,
   sections: [{
     name: '',
     keyString: '',
@@ -36,27 +39,7 @@ const emptyChord = {
   lyric: '',
 };
 
-function CloneChord({ control, insert, sectionIndex, chordIndex }) {
-  const chordValue = useWatch({
-    control,
-    name: `sections.${sectionIndex}.chords.${chordIndex}`
-  });
-
-  return (
-    <label onClick={() => insert(chordIndex + 1, chordValue)}>Copy</label>
-  )
-}
-
-function CloneSection({ control, insert, sectionIndex }) {
-  const sectionValue = useWatch({
-    control,
-    name: `sections.${sectionIndex}`
-  });
-
-  return (
-    <label onClick={() => insert(sectionIndex + 1, sectionValue)}>Copy</label>
-  )
-}
+// ---------- Component Helper Functions ------------
 
 const isDefaultChord = (chord) => {
   return emptyChord.chordString === chord.chordString && emptyChord.lyric === chord.lyric;
@@ -90,6 +73,71 @@ const handleDeleteSection = (remove, index, section) => {
   }
 }
 
+// ---------- Submission helper functions ----------
+
+const patchData = async (data, id) => {
+  const response = await fetch("/api/songs/" + id, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+    headers: {
+        "Content-Type": 'application/json'
+    }
+  })
+  if (!response.ok) {
+      throw Error("unable to add song");
+  }
+}
+
+const postData = async (data) => {
+  const response = await fetch("/api/songs/", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+        "Content-Type": 'application/json'
+    }
+  })
+  if (!response.ok) {
+      throw Error("unable to add song");
+  }
+}
+
+const filterColors = (inputValue) => {
+  return chordOptions.filter((i) =>
+    i.label.toLowerCase().startsWith(inputValue.toLowerCase())
+  );
+};
+
+const loadOptions = (inputValue, callback) => {
+  setTimeout(() => {
+    callback(filterColors(inputValue));
+  }, 1000);
+};
+
+// -------------- COMPONENTS: DeleteChord, DeleteSection, CloneChord, CloneSection, ChordForm, SectionForm, SongForm ---------------
+
+function SelectChord({ onChange, chord }) {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+
+  return (
+  <AsyncSelect 
+    cacheOptions 
+    loadOptions={loadOptions} 
+    onChange={ selectedOption => onChange(selectedOption.value) }
+    defaultValue={ chordOptions.find(({value}) => value === chord.chordString) }
+    placeholder="Enter..."
+    defaultOptions 
+    onInputChange={(value) => {
+      if (value) {
+        setMenuIsOpen(true);
+      } else {
+        setMenuIsOpen(false);
+      }
+    }}
+    menuIsOpen={menuIsOpen}
+  />
+  )
+}
+
 function DeleteChord({ control, remove, sectionIndex, chordIndex }) {
   const chordValue = useWatch({
     control, 
@@ -112,7 +160,29 @@ function DeleteSection({ control, remove, sectionIndex }) {
   )
 }
 
-const Chord = ({ chord, sectionIndex, chordIndex, register, control }) => {
+function CloneChord({ control, insert, sectionIndex, chordIndex }) {
+  const chordValue = useWatch({
+    control,
+    name: `sections.${sectionIndex}.chords.${chordIndex}`
+  });
+
+  return (
+    <label onClick={() => insert(chordIndex + 1, chordValue)}>Copy</label>
+  )
+}
+
+function CloneSection({ control, insert, sectionIndex }) {
+  const sectionValue = useWatch({
+    control,
+    name: `sections.${sectionIndex}`
+  });
+
+  return (
+    <label onClick={() => insert(sectionIndex + 1, sectionValue)}>Copy</label>
+  )
+}
+
+function ChordForm ({ chord, sectionIndex, chordIndex, register, control }) {
   return (
     <>
       <label>Chord</label>
@@ -121,11 +191,7 @@ const Chord = ({ chord, sectionIndex, chordIndex, register, control }) => {
         control={ control }
 
         render={ ({ field: { onChange } }) => (
-          <Select
-            options={ chordOptions }
-            onChange={ selectedOption => onChange(selectedOption.value) }
-            defaultValue={ chordOptions.find(({value}) => value === chord.chordString) }
-          />
+          <SelectChord onChange={onChange} chord={chord}/>
         ) }
       />
       <div className="songForm__lyric">
@@ -138,7 +204,7 @@ const Chord = ({ chord, sectionIndex, chordIndex, register, control }) => {
   )
 }
 
-const Section = ( { section, sectionIndex, control, register } ) => {
+function SectionForm( { section, sectionIndex, control, register } ) {
 
   const name = `sections.${sectionIndex}.chords`;
 
@@ -172,7 +238,7 @@ const Section = ( { section, sectionIndex, control, register } ) => {
 
       { fields.map((field, index) => (
         <div key={field.id} className="songForm__chordContainer">
-            <Chord chord={field} sectionIndex={sectionIndex} chordIndex={index} register={register} control={control}></Chord>
+            <ChordForm chord={field} sectionIndex={sectionIndex} chordIndex={index} register={register} control={control} />
             <DeleteChord 
               className="songForm__deleteChordButton" 
               control={control} remove={remove} 
@@ -192,33 +258,7 @@ const Section = ( { section, sectionIndex, control, register } ) => {
   )
 }
 
-const patchData = async (data, id) => {
-  const response = await fetch("/api/songs/" + id, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-    headers: {
-        "Content-Type": 'application/json'
-    }
-  })
-  if (!response.ok) {
-      throw Error("unable to add song");
-  }
-}
-
-const postData = async (data) => {
-  const response = await fetch("/api/songs/", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-        "Content-Type": 'application/json'
-    }
-  })
-  if (!response.ok) {
-      throw Error("unable to add song");
-  }
-}
-
-export default function SongForm2() {
+export default function SongForm() {
   
   const navigate = useNavigate();
   const { id } = useParams()
@@ -234,13 +274,10 @@ export default function SongForm2() {
 
   useEffect(() => {
     console.log("refresh!")
-    reset(song ? songChordToChordString(song) : emptySong, { keepDefaultValues: true })
+    reset(song ? song : emptySong, { keepDefaultValues: true })
   }, [song])
 
   const onSubmit = async (data) => {
-
-    // rebuild data
-    parseSong(data);
 
     if (song) {
       patchData(data, id);
@@ -260,10 +297,12 @@ export default function SongForm2() {
         <input {...register("name")} />
         <label>Artist</label>
         <input {...register("artist")} />
+        <label>Capo</label>
+        <input {...register("capo")} type='number' />
         {fields.map((field, index) => (
           // important to include key with field's id
           <div key={field.id} className="songForm__sectionContainer"> 
-            <Section section={field} sectionIndex={index} control={control} register={register}></Section>
+            <SectionForm section={field} sectionIndex={index} control={control} register={register} />
             <div className="songForm__sectionButtonContainer">
               <DeleteSection 
                 control={control}

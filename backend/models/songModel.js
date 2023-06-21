@@ -11,17 +11,12 @@ songSchema = new Schema({
         $type: String,
         required: true,
     },
+    capo: Number,
     sections: [{
         name: String,
-        key: {
-            note: String,
-            accidental: String,
-            type: String,
-        },
+        keyString: String,
         chords: [{
-            note: String,
-            accidental: String,
-            type: String,
+            chordString: String,
             lyric: String,
         }]
     }],
